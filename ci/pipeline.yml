@@ -1,0 +1,5 @@
+---
+- name: deploy-shibboleth
+  jobs:
+    - shibboleth-release
+

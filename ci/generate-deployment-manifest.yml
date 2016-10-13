@@ -1,0 +1,23 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: 18fgsa/concourse-task
+
+inputs:
+- name: shibboleth-config
+- name: common
+
+outputs:
+- name: shibboleth-manifest
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    shibboleth-config/generate-deployment-manifest.sh \
+      common/secrets.yml \
+      > shibboleth-manifest/manifest.yml
+

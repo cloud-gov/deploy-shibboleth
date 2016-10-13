@@ -58,7 +58,7 @@ jobs:
   - aggregate:
     - get: shibboleth-staging-deployment
       passed: [deploy-shibboleth-staging]
-    - get: monitoring-config
+    - get: shibboleth-config
       passed: [deploy-shibboleth-staging]
       trigger: true
     - get: common-production
@@ -66,14 +66,14 @@ jobs:
     - get: shibboleth-release
     - get: shibboleth-stemcell
       trigger: true
-  - task: monitoring-manifest
-    file: monitoring-config/ci/generate-deployment-manifest.yml
+  - task: shibboleth-manifest
+    file: shibboleth-config/ci/generate-deployment-manifest.yml
     input_mapping:
       common: common-production
-  - put: monitoring-production-deployment
+  - put: shibboleth-production-deployment
     params:
       cert: common-production/boshCA.crt
-      manifest: monitoring-manifest/manifest.yml
+      manifest: shibboleth-manifest/manifest.yml
       releases: *releases
       stemcells:
       - shibboleth-stemcell/*.tgz

@@ -1,12 +1,19 @@
 ---
 meta:
-  dns_root: microbosh
-  environment: (( merge ))
+  environment: (( param "Please configure your environment name"))
   security_groups:
   - shibboleth
   stemcell:
-    name: (( merge ))
+    name: (( param "Please configure the global stemcell definitions for this deployment" ))
     version: latest
+
+name: (( grab meta.environment ))
+
+director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
+
+releases: (( param "Please list the BOSH releases to use for this deployment" ))
+
+jobs: (( param "Please configure the constituent Jobs for this Deployment" ))
 
 compilation:
   cloud_properties:
@@ -14,36 +21,6 @@ compilation:
   network: shibboleth1
   reuse_compilation_vms: true
   workers: 6
-
-name: (( grab meta.environment ))
-director_uuid: PLACEHOLDER-DIRECTOR-UUID
-
-jobs:
-- instances: 1
-  name: idp
-  networks:
-  - name: shibboleth1
-  persistent_disk: 0
-  resource_pool: small_z1
-  templates:
-  - name: idp
-    release: shibboleth
-
-networks:
-- name: shibboleth1
-  subnets:
-  - gateway: 10.244.188.1
-    name: shibboleth1
-    range: 10.244.188.0/24
-    static:
-    - 10.244.188.2 - 10.244.188.60
-  type: manual
-
-properties: {}
-
-releases:
-- name: shibboleth
-  version: latest
 
 resource_pools:
 - cloud_properties:
@@ -53,11 +30,3 @@ resource_pools:
   stemcell:
     name: (( grab meta.stemcell.name ))
     version: latest
-
-update:
-  canaries: 1
-  canary_watch_time: 1000-30000
-  max_in_flight: 50
-  serial: false
-  update_watch_time: 1000-30000
-

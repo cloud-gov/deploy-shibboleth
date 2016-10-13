@@ -1,11 +1,11 @@
 ---
 meta:
   dns_root: microbosh
-  environment: NAME
+  environment: (( merge ))
   security_groups:
   - shibboleth
   stemcell:
-    name: STEMCELL
+    name: (( merge ))
     version: latest
 
 compilation:
@@ -15,7 +15,7 @@ compilation:
   reuse_compilation_vms: true
   workers: 6
 
-name: NAME
+name: (( grab meta.environment ))
 director_uuid: PLACEHOLDER-DIRECTOR-UUID
 
 jobs:
@@ -51,7 +51,7 @@ resource_pools:
   name: small_z1
   network: shibboleth1
   stemcell:
-    name: STEMCELL
+    name: (( grab meta.stemcell.name ))
     version: latest
 
 update:

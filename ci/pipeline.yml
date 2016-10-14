@@ -135,6 +135,16 @@ resources:
     region_name: us-gov-west-1
     secret_access_key: {{ci-secret-access-key}}
 
+- name: cg-s3-shibboleth-release
+  type: s3
+  source:
+    region_name: {{s3-bosh-releases-region}}
+    access_key_id: {{ci-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: shibboleth-(.*).tgz
+    secret_access_key: {{ci-secret-access-key}}
+
 - name: shibboleth-staging-deployment
   type: 18f-bosh-deployment
   source:

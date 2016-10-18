@@ -105,7 +105,7 @@ resources:
     bucket_name: {{shibboleth-staging-private-bucket}}
     access_key_id: {{ci-access-key-id}}
     secret_access_key: {{ci-secret-access-key}}
-    secrets_file: shibboleth.yml
+    secrets_file: shibboleth-staging.yml
     secrets_passphrase: {{shibboleth-staging-private-passphrase}}
     bosh_cert: bosh.pem
 

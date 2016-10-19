@@ -7,7 +7,7 @@ jobs:
       trigger: true
     - get: common-staging
     - get: pipeline-tasks
-    - get: shibboleth-release
+    - get: cg-s3-shibboleth-release
     - get: shibboleth-stemcell
       trigger: true
   - task: shibboleth-manifest
@@ -18,7 +18,8 @@ jobs:
     params:
       cert: common-staging/boshCA.crt
       manifest: shibboleth-manifest/manifest.yml
-      releases: *releases
+      releases:
+      - cg-s3-shibboleth-release/*.tgz
       stemcells:
       - shibboleth-stemcell/*.tgz
     on_failure:

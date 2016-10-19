@@ -1,16 +1,4 @@
 ---
-groups:
-  - name: all
-    jobs:
-    - deploy-shibboleth-staging
-    - deploy-shibboleth-production
-  - name: staging
-    jobs:
-    - deploy-shibboleth-staging
-  - name: production
-    jobs:
-    - deploy-shibboleth-production
-
 jobs:
 - name: deploy-shibboleth-staging
   plan:
@@ -52,51 +40,6 @@ jobs:
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
-- name: deploy-shibboleth-production
-  serial: true
-  plan:
-  - aggregate:
-    - get: shibboleth-staging-deployment
-      passed: [deploy-shibboleth-staging]
-    - get: shibboleth-config
-      passed: [deploy-shibboleth-staging]
-      trigger: true
-    - get: common-production
-    - get: pipeline-tasks
-    - get: shibboleth-release
-    - get: shibboleth-stemcell
-      trigger: true
-  - task: shibboleth-manifest
-    file: shibboleth-config/ci/generate-deployment-manifest.yml
-    input_mapping:
-      common: common-production
-  - put: shibboleth-production-deployment
-    params:
-      cert: common-production/boshCA.crt
-      manifest: shibboleth-manifest/manifest.yml
-      releases: *releases
-      stemcells:
-      - shibboleth-stemcell/*.tgz
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: FAILED to deploy shibboleth on production
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed shibboleth on production
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-
-
 resources:
 - name: common-staging
   type: cg-common
@@ -107,17 +50,6 @@ resources:
     secret_access_key: {{ci-secret-access-key}}
     secrets_file: shibboleth-staging.yml
     secrets_passphrase: {{shibboleth-staging-private-passphrase}}
-    bosh_cert: bosh.pem
-
-- name: common-production
-  type: cg-common
-  source:
-    region: {{shibboleth-production-private-region}}
-    bucket_name: {{shibboleth-production-private-bucket}}
-    access_key_id: {{ci-access-key-id}}
-    secret_access_key: {{ci-secret-access-key}}
-    secrets_file: shibboleth.yml
-    secrets_passphrase: {{shibboleth-production-private-passphrase}}
     bosh_cert: bosh.pem
 
 - name: shibboleth-config
@@ -152,15 +84,6 @@ resources:
     username: {{shibboleth-staging-deployment-bosh-username}}
     password: {{shibboleth-staging-deployment-bosh-password}}
     deployment: {{shibboleth-staging-deployment-bosh-deployment}}
-    ignore_ssl: false
-
-- name: shibboleth-production-deployment
-  type: 18f-bosh-deployment
-  source:
-    target: {{shibboleth-production-deployment-bosh-target}}
-    username: {{shibboleth-production-deployment-bosh-username}}
-    password: {{shibboleth-production-deployment-bosh-password}}
-    deployment: {{shibboleth-production-deployment-bosh-deployment}}
     ignore_ssl: false
 
 - name: pipeline-tasks

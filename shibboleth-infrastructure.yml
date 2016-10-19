@@ -22,10 +22,10 @@ resource_pools:
   - name: small_z1
     cloud_properties:
       instance_type: m3.medium
+      elbs: (( param "Please configure the global ELB definition for this deployment" ))
 
 networks:
   - name: floating
-    type: vip
     cloud_properties: {}
   - name: shibboleth1
     type: dynamic

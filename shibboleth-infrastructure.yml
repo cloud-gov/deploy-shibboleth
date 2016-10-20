@@ -25,8 +25,6 @@ resource_pools:
       elbs: (( param "Please configure the global ELB definition for this deployment" ))
 
 networks:
-  - name: floating
-    cloud_properties: {}
   - name: shibboleth1
     type: dynamic
     cloud_properties:

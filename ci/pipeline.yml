@@ -6,8 +6,10 @@ jobs:
     - get: shibboleth-config
       trigger: true
     - get: common-staging
+      trigger: true
     - get: pipeline-tasks
     - get: cg-s3-shibboleth-release
+      trigger: true
     - get: shibboleth-stemcell
       trigger: true
   - task: shibboleth-manifest

@@ -1,8 +1,6 @@
 ---
 meta:
   environment: (( param "Please configure your environment name"))
-  security_groups:
-  - shibboleth
   stemcell:
     name: (( param "Please configure the global stemcell definitions for this deployment" ))
     version: latest

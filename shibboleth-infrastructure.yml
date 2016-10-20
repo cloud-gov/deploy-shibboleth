@@ -1,7 +1,5 @@
 ---
 meta:
-  dns_root: (( param "Please configure your root DNS name" ))
-  security_groups: (( param "Please configure your AWS Security Groups" ))
   persistent_disk: 4096
 
   stemcell:
@@ -27,5 +25,3 @@ resource_pools:
 networks:
   - name: shibboleth1
     type: dynamic
-    cloud_properties:
-      security_groups: (( grab meta.security_groups ))

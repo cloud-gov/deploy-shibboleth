@@ -1,0 +1,6 @@
+certs
+*secrets.yml
+*.pem
+credentials.yml
+
+tmp/

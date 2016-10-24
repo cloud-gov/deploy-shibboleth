@@ -1,0 +1,30 @@
+---
+meta:
+  environment: (( param "Please configure your environment name"))
+  stemcell:
+    name: (( param "Please configure the global stemcell definitions for this deployment" ))
+    version: latest
+
+name: (( grab meta.environment ))
+
+director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
+
+releases: (( param "Please list the BOSH releases to use for this deployment" ))
+
+jobs: (( param "Please configure the constituent Jobs for this Deployment" ))
+
+compilation:
+  cloud_properties:
+    name: random
+  network: shibboleth1
+  reuse_compilation_vms: true
+  workers: 6
+
+resource_pools:
+- cloud_properties:
+    name: random
+  name: small_z1
+  network: shibboleth1
+  stemcell:
+    name: (( grab meta.stemcell.name ))
+    version: latest

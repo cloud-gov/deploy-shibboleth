@@ -10,6 +10,7 @@ groups:
 - name: production
   jobs:
   - deploy-shibboleth-production
+
 jobs:
 - name: deploy-shibboleth-staging
   plan:
@@ -18,7 +19,6 @@ jobs:
       trigger: true
     - get: common-staging
       trigger: true
-    - get: pipeline-tasks
     - get: cg-s3-shibboleth-release
       trigger: true
     - get: shibboleth-stemcell
@@ -35,24 +35,24 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       stemcells:
       - shibboleth-stemcell/*.tgz
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: FAILED to deploy shibboleth on staging
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed shibboleth on staging
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy shibboleth on staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed shibboleth on staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 - name: deploy-shibboleth-production
   plan:
@@ -62,12 +62,12 @@ jobs:
       passed: [deploy-shibboleth-staging]
     - get: common-production
       trigger: true
-    - get: pipeline-tasks
     - get: cg-s3-shibboleth-release
       trigger: true
       passed: [deploy-shibboleth-staging]
     - get: shibboleth-stemcell
       trigger: true
+      passed: [deploy-shibboleth-staging]
   - task: shibboleth-manifest
     file: shibboleth-config/ci/generate-deployment-manifest.yml
     input_mapping:
@@ -80,24 +80,24 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       stemcells:
       - shibboleth-stemcell/*.tgz
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: FAILED to deploy shibboleth on production
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed shibboleth on production
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy shibboleth on production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed shibboleth on production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 resources:
 - name: common-staging
@@ -165,12 +165,6 @@ resources:
     deployment: {{shibboleth-production-deployment-bosh-deployment}}
     ignore_ssl: false
 
-- name: pipeline-tasks
-  type: git
-  source:
-    uri: {{pipeline-tasks-git-url}}
-    branch: {{pipeline-tasks-git-branch}}
-
 - name: slack
   type: slack-notification
   source:
@@ -181,10 +175,12 @@ resource_types:
   type: docker-image
   source:
     repository: cfcommunity/slack-notification-resource
+
 - name: 18f-bosh-deployment
   type: docker-image
   source:
     repository: 18fgsa/bosh-deployment-resource
+
 - name: cg-common
   type: docker-image
   source:

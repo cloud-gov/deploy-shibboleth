@@ -7,9 +7,13 @@ meta:
     version: latest
 
 jobs:
-  - name: idp
+  - name: idp_z1
     networks:
       - name: shibboleth1
+    persistent_disk: (( grab meta.persistent_disk ))
+  - name: idp_z2
+    networks:
+      - name: shibboleth2
     persistent_disk: (( grab meta.persistent_disk ))
 
 compilation:
@@ -21,7 +25,13 @@ resource_pools:
     cloud_properties:
       instance_type: m3.medium
       elbs: (( param "Please configure the global ELB definition for this deployment" ))
+  - name: small_z2
+    cloud_properties:
+      instance_type: m3.medium
+      elbs: (( param "Please configure the global ELB definition for this deployment" ))
 
 networks:
   - name: shibboleth1
+    type: dynamic
+  - name: shibboleth2
     type: dynamic

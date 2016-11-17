@@ -59,11 +59,13 @@ jobs:
   - aggregate:
     - get: shibboleth-config
       trigger: true
+      passed: [deploy-shibboleth-staging]
     - get: common-production
       trigger: true
     - get: pipeline-tasks
     - get: cg-s3-shibboleth-release
       trigger: true
+      passed: [deploy-shibboleth-staging]
     - get: shibboleth-stemcell
       trigger: true
   - task: shibboleth-manifest

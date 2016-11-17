@@ -28,3 +28,10 @@ resource_pools:
   stemcell:
     name: (( grab meta.stemcell.name ))
     version: latest
+- cloud_properties:
+    name: random
+  name: small_z2
+  network: shibboleth2
+  stemcell:
+    name: (( grab meta.stemcell.name ))
+    version: latest

@@ -9,7 +9,18 @@ name: (( grab meta.environment ))
 
 director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
 
-releases: (( param "Please list the BOSH releases to use for this deployment" ))
+releases:
+- (( append ))
+- {name: fisma, version: latest}
+- {name: newrelic, version: latest}
+- {name: collectd, version: latest}
+- {name: tripwire, version: latest}
+- {name: awslogs, version: latest}
+- {name: nessus-agent, version: latest}
+- {name: riemannc, version: latest}
+- {name: clamav, version: latest}
+- {name: snort, version: latest}
+- {name: cron, version: latest}
 
 jobs: (( param "Please configure the constituent Jobs for this Deployment" ))
 

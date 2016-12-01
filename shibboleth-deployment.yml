@@ -11,12 +11,6 @@ director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
 
 releases:
 - (( append ))
-- {name: fisma, version: latest}
-- {name: newrelic, version: latest}
-- {name: collectd, version: latest}
-- {name: nessus-agent, version: latest}
-- {name: riemannc, version: latest}
-- {name: cron, version: latest}
 
 jobs: (( param "Please configure the constituent Jobs for this Deployment" ))
 

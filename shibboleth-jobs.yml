@@ -11,12 +11,6 @@ jobs:
     templates:
     - name: idp
       release: shibboleth
-    - {name: newrelic-monitor, release: newrelic}
-    - {name: nessus-agent, release: nessus-agent}
-    - {name: harden, release: fisma}
-    - {name: collectd, release: collectd}
-    - {name: riemannc, release: riemannc}
-    - {name: cron, release: cron}
     instances: 1
     persistent_disk: 0
     resource_pool: small_z1
@@ -26,12 +20,6 @@ jobs:
     templates:
     - name: idp
       release: shibboleth
-    - {name: newrelic-monitor, release: newrelic}
-    - {name: nessus-agent, release: nessus-agent}
-    - {name: harden, release: fisma}
-    - {name: collectd, release: collectd}
-    - {name: riemannc, release: riemannc}
-    - {name: cron, release: cron}
     instances: 0
     persistent_disk: 0
     resource_pool: small_z2

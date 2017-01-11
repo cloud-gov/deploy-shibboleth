@@ -15,6 +15,7 @@ jobs:
 - name: deploy-shibboleth-staging
   plan:
   - aggregate:
+    - get: master-bosh-root-cert
     - get: shibboleth-config
       trigger: true
     - get: common-staging
@@ -29,7 +30,7 @@ jobs:
       common: common-staging
   - put: shibboleth-staging-deployment
     params:
-      cert: common-staging/boshCA.crt
+      cert: master-bosh-root-cert/master-bosh.crt
       manifest: shibboleth-manifest/manifest.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
@@ -57,6 +58,7 @@ jobs:
 - name: deploy-shibboleth-production
   plan:
   - aggregate:
+    - get: master-bosh-root-cert
     - get: shibboleth-config
       trigger: true
       passed: [deploy-shibboleth-staging]
@@ -74,7 +76,7 @@ jobs:
       common: common-production
   - put: shibboleth-production-deployment
     params:
-      cert: common-production/boshCA.crt
+      cert: master-bosh-root-cert/master-bosh.crt
       manifest: shibboleth-manifest/manifest.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
@@ -100,6 +102,15 @@ jobs:
       icon_url: {{slack-icon-url}}
 
 resources:
+- name: master-bosh-root-cert
+  type: s3
+  source:
+    access_key_id: {{ci-access-key-id}}
+    bucket: {{shibboleth-production-private-bucket}}
+    region_name: {{shibboleth-production-private-region}}
+    secret_access_key: {{ci-secret-access-key}}
+    versioned_file: master-bosh.crt
+
 - name: common-staging
   type: cg-common
   source:

@@ -12,7 +12,6 @@ jobs:
     - name: idp
       release: shibboleth
     instances: 1
-    persistent_disk: 0
     resource_pool: small_z1
     networks: (( param "Please configure the networks for this job" ))
 
@@ -21,7 +20,6 @@ jobs:
     - name: idp
       release: shibboleth
     instances: 0
-    persistent_disk: 0
     resource_pool: small_z2
     networks: (( param "Please configure the networks for this job" ))
 

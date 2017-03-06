@@ -1,7 +1,5 @@
 ---
 meta:
-  persistent_disk: 4096
-
   stemcell:
     name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
     version: latest
@@ -10,25 +8,40 @@ jobs:
   - name: idp_z1
     networks:
       - name: shibboleth1
-    persistent_disk: (( grab meta.persistent_disk ))
+    persistent_disk_pool: tiny
   - name: idp_z2
     networks:
       - name: shibboleth2
-    persistent_disk: (( grab meta.persistent_disk ))
+    persistent_disk_pool: tiny
 
 compilation:
   cloud_properties:
     instance_type: m3.medium
+
+disk_pools:
+- name: tiny
+  disk_size: 4096
+  cloud_properties:
+    type: gp2
+    encrypted: true
 
 resource_pools:
   - name: small_z1
     cloud_properties:
       instance_type: m3.medium
       elbs: (( param "Please configure the global ELB definition for this deployment" ))
+      ephemeral_disk:
+        size: 10_240
+        type: gp2
+        encrypted: true
   - name: small_z2
     cloud_properties:
       instance_type: m3.medium
       elbs: (( param "Please configure the global ELB definition for this deployment" ))
+      ephemeral_disk:
+        size: 10_240
+        type: gp2
+        encrypted: true
 
 networks:
   - name: shibboleth1

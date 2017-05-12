@@ -6,21 +6,21 @@ update:
   update_watch_time: 5000-600000
   serial: false
 
-jobs:
-  - name: idp_z1
-    templates:
-    - name: idp
-      release: shibboleth
-    instances: 1
-    resource_pool: small_z1
-    networks: (( param "Please configure the networks for this job" ))
+stemcells:
+- alias: default
+  name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+  version: latest
 
-  - name: idp_z2
-    templates:
-    - name: idp
-      release: shibboleth
-    instances: 0
-    resource_pool: small_z2
-    networks: (( param "Please configure the networks for this job" ))
-
-networks: (( param "Please configure the global network definitions for this deployment" ))
+instance_groups:
+- name: idp
+  stemcell: default
+  templates:
+  - name: idp
+    release: shibboleth
+  azs: [z1, z2]
+  vm_type: shibboleth
+  vm_extensions: [shibboleth-lb]
+  disk_type: shibboleth
+  instances: 2
+  networks:
+  - name: shibboleth

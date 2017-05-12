@@ -10,29 +10,7 @@ name: (( grab meta.environment ))
 director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
 
 releases:
-- (( append ))
+- name: shibboleth
+  version: latest
 
 jobs: (( param "Please configure the constituent Jobs for this Deployment" ))
-
-compilation:
-  cloud_properties:
-    name: random
-  network: shibboleth1
-  reuse_compilation_vms: true
-  workers: 6
-
-resource_pools:
-- cloud_properties:
-    name: random
-  name: small_z1
-  network: shibboleth1
-  stemcell:
-    name: (( grab meta.stemcell.name ))
-    version: latest
-- cloud_properties:
-    name: random
-  name: small_z2
-  network: shibboleth2
-  stemcell:
-    name: (( grab meta.stemcell.name ))
-    version: latest

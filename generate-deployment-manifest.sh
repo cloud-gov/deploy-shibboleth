@@ -15,5 +15,4 @@ fi
 spruce merge --prune meta \
   $SCRIPTPATH/shibboleth-deployment.yml \
   $SCRIPTPATH/shibboleth-jobs.yml \
-  $SCRIPTPATH/shibboleth-infrastructure.yml \
   $SECRETS_FILE

@@ -14,7 +14,7 @@ stemcells:
 instance_groups:
 - name: idp
   stemcell: default
-  templates:
+  jobs:
   - name: idp
     release: shibboleth
   azs: [z1, z2]

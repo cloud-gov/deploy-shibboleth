@@ -1,9 +1,6 @@
 ---
 meta:
   environment: (( param "Please configure your environment name"))
-  stemcell:
-    name: (( param "Please configure the global stemcell definitions for this deployment" ))
-    version: latest
 
 name: (( grab meta.environment ))
 
@@ -12,5 +9,3 @@ director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
 releases:
 - name: shibboleth
   version: latest
-
-jobs: (( param "Please configure the constituent Jobs for this Deployment" ))

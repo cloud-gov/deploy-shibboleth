@@ -20,4 +20,5 @@ run:
     shibboleth-config/generate-deployment-manifest.sh \
       common/secrets.yml \
       > shibboleth-manifest/manifest.yml
+    bosh-lint lint-manifest shibboleth-manifest/manifest.yml
 

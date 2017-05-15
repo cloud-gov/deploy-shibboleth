@@ -217,3 +217,8 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/cg-common-resource
+
+- name: s3-iam
+  type: docker-image
+  source:
+    repository: 18fgsa/s3-resource

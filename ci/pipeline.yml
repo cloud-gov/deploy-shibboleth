@@ -18,16 +18,17 @@ jobs:
     - get: master-bosh-root-cert
     - get: shibboleth-config
       trigger: true
-    - get: common-staging
+    - get: common
+      resource: common-staging
       trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-staging
     - get: cg-s3-shibboleth-release
       trigger: true
     - get: shibboleth-stemcell
       trigger: true
   - task: shibboleth-manifest
     file: shibboleth-config/ci/generate-deployment-manifest.yml
-    input_mapping:
-      common: common-staging
     params:
       ENVIRONMENT_FILE: shibboleth-staging.yml
   - put: shibboleth-staging-deployment
@@ -64,8 +65,11 @@ jobs:
     - get: shibboleth-config
       trigger: true
       passed: [deploy-shibboleth-staging]
-    - get: common-production
+    - get: common
+      resource: common-production
       trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-production
     - get: cg-s3-shibboleth-release
       trigger: true
       passed: [deploy-shibboleth-staging]
@@ -74,8 +78,6 @@ jobs:
       passed: [deploy-shibboleth-staging]
   - task: shibboleth-manifest
     file: shibboleth-config/ci/generate-deployment-manifest.yml
-    input_mapping:
-      common: common-production
     params:
       ENVIRONMENT_FILE: shibboleth-production.yml
   - put: shibboleth-production-deployment

@@ -1,0 +1,16 @@
+instance_groups:
+- name: idp
+  jobs:
+  - name: idp
+    properties:
+      idp:
+        login:
+          forgotPasswordLink: https://account.fr-stage.cloud.gov/forgot-password
+        totp:
+          issuerName: "cloud.gov STAGING"
+        entityID: https://idp.fr-stage.cloud.gov
+        scope: fr-stage.cloud.gov
+        metadata:
+          providers:
+          - id: fr-stage
+            metadataURL: https://login.fr-stage.cloud.gov/saml/metadata

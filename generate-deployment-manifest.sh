@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 
@@ -12,7 +12,8 @@ if [ -z $SECRETS_FILE ]; then
   exit 1
 fi
 
-spruce merge --prune meta \
+spruce merge --prune meta --prune terraform_outputs \
   $SCRIPTPATH/shibboleth-deployment.yml \
-  $SCRIPTPATH/shibboleth-jobs.yml \
+  $ENVIRONMENT_FILE \
+  terraform-yaml/state.yml \
   $SECRETS_FILE

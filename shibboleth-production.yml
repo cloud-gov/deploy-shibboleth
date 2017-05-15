@@ -1,0 +1,16 @@
+instance_groups:
+- name: idp
+  jobs:
+  - name: idp
+    properties:
+      idp:
+        login:
+          forgotPasswordLink: https://account.fr.cloud.gov/forgot-password
+        totp:
+          issuerName: "cloud.gov"
+        entityID: https://idp.fr.cloud.gov
+        scope: fr.cloud.gov
+        metadata:
+          providers:
+          - id: fr
+            metadataURL: https://login.fr.cloud.gov/saml/metadata

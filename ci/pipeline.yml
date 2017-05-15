@@ -30,7 +30,7 @@ jobs:
   - task: shibboleth-manifest
     file: shibboleth-config/ci/generate-deployment-manifest.yml
     params:
-      ENVIRONMENT_FILE: shibboleth-staging.yml
+      ENVIRONMENT_FILE: shibboleth-config/shibboleth-staging.yml
   - put: shibboleth-staging-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -79,7 +79,7 @@ jobs:
   - task: shibboleth-manifest
     file: shibboleth-config/ci/generate-deployment-manifest.yml
     params:
-      ENVIRONMENT_FILE: shibboleth-production.yml
+      ENVIRONMENT_FILE: shibboleth-config/shibboleth-production.yml
   - put: shibboleth-production-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt

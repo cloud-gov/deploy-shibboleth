@@ -8,6 +8,7 @@ image_resource:
 inputs:
 - name: shibboleth-config
 - name: common
+- name: terraform-yaml
 
 outputs:
 - name: shibboleth-manifest

@@ -28,6 +28,8 @@ jobs:
     file: shibboleth-config/ci/generate-deployment-manifest.yml
     input_mapping:
       common: common-staging
+    params:
+      ENVIRONMENT_FILE: shibboleth-staging.yml
   - put: shibboleth-staging-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -74,6 +76,8 @@ jobs:
     file: shibboleth-config/ci/generate-deployment-manifest.yml
     input_mapping:
       common: common-production
+    params:
+      ENVIRONMENT_FILE: shibboleth-production.yml
   - put: shibboleth-production-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -180,6 +184,21 @@ resources:
   type: slack-notification
   source:
     url: {{slack-webhook-url}}
+
+- name: terraform-yaml-staging
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    versioned_file: {{tf-state-file-staging}}
+    region_name: {{aws-region}}
+
+- name: terraform-yaml-production
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    versioned_file: {{tf-state-file-production}}
+    region_name: {{aws-region}}
+
 
 resource_types:
 - name: slack-notification

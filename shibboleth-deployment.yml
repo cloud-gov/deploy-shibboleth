@@ -69,4 +69,4 @@ instance_groups:
   disk_type: shibboleth
   instances: 2
   networks:
-  - name: shibboleth
+  - name: default

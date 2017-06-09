@@ -109,12 +109,10 @@ jobs:
 
 resources:
 - name: master-bosh-root-cert
-  type: s3
+  type: s3-iam
   source:
-    access_key_id: {{ci-access-key-id}}
     bucket: {{shibboleth-production-private-bucket}}
     region_name: {{shibboleth-production-private-region}}
-    secret_access_key: {{ci-secret-access-key}}
     versioned_file: master-bosh.crt
 
 - name: common-staging
@@ -122,8 +120,6 @@ resources:
   source:
     region: {{shibboleth-staging-private-region}}
     bucket_name: {{shibboleth-staging-private-bucket}}
-    access_key_id: {{ci-access-key-id}}
-    secret_access_key: {{ci-secret-access-key}}
     secrets_file: shibboleth-staging.yml
     secrets_passphrase: {{shibboleth-staging-private-passphrase}}
     bosh_cert: bosh.pem
@@ -133,8 +129,6 @@ resources:
   source:
     region: {{shibboleth-production-private-region}}
     bucket_name: {{shibboleth-production-private-bucket}}
-    access_key_id: {{ci-access-key-id}}
-    secret_access_key: {{ci-secret-access-key}}
     secrets_file: shibboleth.yml
     secrets_passphrase: {{shibboleth-production-private-passphrase}}
     bosh_cert: bosh.pem
@@ -146,23 +140,19 @@ resources:
     branch: {{cg-deploy-shibboleth-git-branch}}
 
 - name: shibboleth-stemcell
-  type: s3
+  type: s3-iam
   source:
-    access_key_id: {{ci-access-key-id}}
     bucket: cg-stemcell-images
     regexp: light-bosh-stemcell-(.*)-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
     region_name: us-gov-west-1
-    secret_access_key: {{ci-secret-access-key}}
 
 - name: cg-s3-shibboleth-release
-  type: s3
+  type: s3-iam
   source:
-    region_name: {{s3-bosh-releases-region}}
-    access_key_id: {{ci-access-key-id}}
+    region_name: {{aws-region}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: shibboleth-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
 
 - name: shibboleth-staging-deployment
   type: 18f-bosh-deployment

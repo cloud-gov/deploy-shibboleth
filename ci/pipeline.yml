@@ -16,6 +16,7 @@ jobs:
   plan:
   - aggregate:
     - get: master-bosh-root-cert
+    - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
     - get: common
@@ -31,6 +32,11 @@ jobs:
     file: shibboleth-config/ci/generate-deployment-manifest.yml
     params:
       ENVIRONMENT_FILE: shibboleth-config/shibboleth-staging.yml
+  - task: lint-manifest
+    file: pipeline-tasks/lint-manifest.yml
+    input_mapping:
+      pipeline-config: shibboleth-config
+      lint-manifest: shibboleth-manifest
   - put: shibboleth-staging-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -62,6 +68,7 @@ jobs:
   plan:
   - aggregate:
     - get: master-bosh-root-cert
+    - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
       passed: [deploy-shibboleth-staging]
@@ -80,6 +87,11 @@ jobs:
     file: shibboleth-config/ci/generate-deployment-manifest.yml
     params:
       ENVIRONMENT_FILE: shibboleth-config/shibboleth-production.yml
+  - task: lint-manifest
+    file: pipeline-tasks/lint-manifest.yml
+    input_mapping:
+      pipeline-config: shibboleth-config
+      lint-manifest: shibboleth-manifest
   - put: shibboleth-production-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -114,6 +126,12 @@ resources:
     bucket: {{shibboleth-production-private-bucket}}
     region_name: {{shibboleth-production-private-region}}
     versioned_file: master-bosh.crt
+
+- name: pipeline-tasks
+  type: git
+  source:
+    uri: {{pipeline-tasks-git-url}}
+    branch: {{pipeline-tasks-git-branch}}
 
 - name: common-staging
   type: cg-common

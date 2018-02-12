@@ -26,6 +26,8 @@ jobs:
       resource: terraform-yaml-staging
     - get: cg-s3-shibboleth-release
       trigger: true
+    - get: secureproxy-release
+      trigger: true
     - get: shibboleth-stemcell
       trigger: true
   - task: shibboleth-manifest
@@ -43,6 +45,7 @@ jobs:
       manifest: shibboleth-manifest/manifest.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
+      - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell/*.tgz
   on_failure:
@@ -80,6 +83,9 @@ jobs:
     - get: cg-s3-shibboleth-release
       trigger: true
       passed: [deploy-shibboleth-staging]
+    - get: secureproxy-release
+      trigger: true
+      passed: [deploy-shibboleth-staging]
     - get: shibboleth-stemcell
       trigger: true
       passed: [deploy-shibboleth-staging]
@@ -98,6 +104,7 @@ jobs:
       manifest: shibboleth-manifest/manifest.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
+      - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell/*.tgz
   on_failure:
@@ -138,7 +145,7 @@ resources:
   source:
     region: {{shibboleth-staging-private-region}}
     bucket_name: {{shibboleth-staging-private-bucket}}
-    secrets_file: shibboleth-staging.yml
+    secrets_file: staging-shibboleth.yml
     secrets_passphrase: {{shibboleth-staging-private-passphrase}}
     bosh_cert: bosh.pem
 
@@ -147,7 +154,7 @@ resources:
   source:
     region: {{shibboleth-production-private-region}}
     bucket_name: {{shibboleth-production-private-bucket}}
-    secrets_file: shibboleth.yml
+    secrets_file: production-shibboleth.yml
     secrets_passphrase: {{shibboleth-production-private-passphrase}}
     bosh_cert: bosh.pem
 
@@ -165,28 +172,30 @@ resources:
 - name: cg-s3-shibboleth-release
   type: s3-iam
   source:
-    region_name: {{aws-region}}
-    bucket: {{s3-bosh-releases-bucket}}
-    private: true
     regexp: shibboleth-(.*).tgz
+    <<: *s3-release-params
+
+- name: secureproxy-release
+  type: s3-iam
+  source:
+    regexp: secureproxy-(.*).tgz
+    <<: *s3-release-params
 
 - name: shibboleth-staging-deployment
   type: 18f-bosh-deployment
   source:
     target: {{shibboleth-staging-deployment-bosh-target}}
-    username: {{shibboleth-staging-deployment-bosh-username}}
-    password: {{shibboleth-staging-deployment-bosh-password}}
+    client_id: {{shibboleth-staging-deployment-bosh-client-id}}
+    client_secret: {{shibboleth-staging-deployment-bosh-client-passphrase}}
     deployment: {{shibboleth-staging-deployment-bosh-deployment}}
-    ignore_ssl: false
 
 - name: shibboleth-production-deployment
   type: 18f-bosh-deployment
   source:
     target: {{shibboleth-production-deployment-bosh-target}}
-    username: {{shibboleth-production-deployment-bosh-username}}
-    password: {{shibboleth-production-deployment-bosh-password}}
+    client_id: {{shibboleth-production-deployment-bosh-client-id}}
+    client_secret: {{shibboleth-production-deployment-bosh-client-passphrase}}
     deployment: {{shibboleth-production-deployment-bosh-deployment}}
-    ignore_ssl: false
 
 - name: slack
   type: slack-notification
@@ -228,3 +237,8 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/s3-resource
+
+s3-release-params: &s3-release-params
+  bucket: {{s3-bosh-releases-bucket}}
+  region_name: {{aws-region}}
+  private: true

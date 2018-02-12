@@ -6,6 +6,8 @@ director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
 releases:
 - name: shibboleth
   version: latest
+- name: secureproxy
+  version: latest
 
 update:
   canaries: 1
@@ -23,6 +25,13 @@ instance_groups:
 - name: idp
   stemcell: default
   jobs:
+  - name: secureproxy
+    release: secureproxy
+    properties:
+      secureproxy:
+        listen_port: 8080
+        proxy_port: 8081
+
   - name: idp
     release: shibboleth
     properties:
@@ -62,6 +71,7 @@ instance_groups:
             userSeedTable: totp_seed
             userColumn: username
             seedColumn: seed
+        port: 8081
 
   azs: [z1, z2]
   vm_type: shibboleth

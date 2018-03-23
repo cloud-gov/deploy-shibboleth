@@ -75,7 +75,7 @@ instance_groups:
 
   azs: [z1, z2]
   vm_type: shibboleth
-  vm_extensions: [shibboleth-lb]
+  vm_extensions: [shibboleth-lb-legacy, shibboleth-lb]
   disk_type: shibboleth
   instances: 2
   networks:

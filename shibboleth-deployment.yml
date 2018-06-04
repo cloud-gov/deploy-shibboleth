@@ -49,6 +49,7 @@ instance_groups:
         description: Federated identity service for cloud.gov users
         login:
           helpLink: https://cloud.gov/docs/help/
+          mfaHelpLink: https://cloud.gov/docs/getting-started/accounts/#if-you-can-t-access-your-token-codes
         authn:
           flows: Totp
         authentication:

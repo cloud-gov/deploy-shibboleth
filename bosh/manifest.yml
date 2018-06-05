@@ -34,7 +34,7 @@ instance_groups:
     release: shibboleth
     properties:
       aws:
-        cluster-tag: (( grab name ))
+        cluster-tag: ((deployment_name))
       root:
         title: cloud.gov Login Service
         footer: An official website of the United States Government
@@ -57,16 +57,16 @@ instance_groups:
           passExpirationDays: 90
         jaas:
           database:
-            dbURL: jdbc:postgresql://((grab terraform_outputs.cf_rds_host))/uaadb
-            dbUser: (( grab terraform_outputs.cf_rds_username ))
-            dbPassword: (( grab terraform_outputs.cf_rds_password ))
+            dbURL: jdbc:postgresql://((terraform_outputs.cf_rds_host))/uaadb
+            dbUser: ((terraform_outputs.cf_rds_username ))
+            dbPassword: ((terraform_outputs.cf_rds_password ))
             origin: cloud.gov
             auditTable: sec_audit
         totp:
           database:
-            dbURL: jdbc:postgresql://((grab terraform_outputs.cf_rds_host))/uaadb
-            dbUser: (( grab terraform_outputs.cf_rds_username ))
-            dbPassword: (( grab terraform_outputs.cf_rds_password ))
+            dbURL: jdbc:postgresql://((terraform_outputs.cf_rds_host))/uaadb
+            dbUser: (( terraform_outputs.cf_rds_username ))
+            dbPassword: (( terraform_outputs.cf_rds_password ))
             userSeedTable: totp_seed
             userColumn: username
             seedColumn: seed

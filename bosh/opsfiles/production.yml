@@ -15,7 +15,7 @@
   value: fr.cloud.gov
 
 - type: replace
-  path: /instance_groups/name=idp/jobs/name=idp/properties/idp/metadata/providers/id=fr?/metadataURL?
+  path: /instance_groups/name=idp/jobs/name=idp/properties/idp/metadata?/providers?/id=fr?/metadataURL?
   value: https://login.fr.cloud.gov/saml/metadata
 
 

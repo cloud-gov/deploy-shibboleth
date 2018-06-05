@@ -15,11 +15,16 @@
       providers:
       - id: fr-stage
         metadataURL: https://login.fr-stage.cloud.gov/saml/metadata
-    sslPrivateKey: ((sslPrivateKey))
-    sslCertificate: ((sslCertificate))
-    signing: ((signing))
-    encryption: ((encryption))
-    passwords: ((passwords))
+    sslPrivateKey: ((idp_cert.private_key))
+    sslCertificate: ((idp_cert.certificate))
+    signing: 
+      cert: ((idp_signing.certificate))
+      key: ((idp_signing.private_key))
+    encryption: 
+      cert: ((idp_encryption.certificate))
+      key: ((idp_encryption.private_key))
+    passwords: 
+      sealer: ((sealer_password))
 
 ## Here is an example of stuff you might put in here.
 # instance_groups:

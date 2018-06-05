@@ -81,3 +81,33 @@ instance_groups:
   instances: 2
   networks:
   - name: default
+
+variables:
+- name: sealer_password
+  type: password
+- name: bosh_ca
+  type: certificate
+  options:
+    is_ca: true
+    common_name: master-bosh
+- name: idp_cert
+  type: certificate
+  options:
+    ca: bosh_ca
+    common_name: idp.fr.cloud.gov
+# This was originally created with:
+# certstrap request-cert --cn idp-encryption-key --passphrase ''
+# They seem to not have the standard BEGIN/END lines on them, though?
+- name: idp_signing
+  type: certificate
+  options:
+    ca: bosh_ca
+    common_name: idp-encryption-key
+# This was originally created with:
+# certstrap request-cert --cn idp-encryption-key --passphrase ''
+# They seem to not have the standard BEGIN/END lines on them, though?
+- name: idp_encryption
+  type: certificate
+  options:
+    ca: bosh_ca
+    common_name: idp-encryption-key

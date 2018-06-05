@@ -168,18 +168,18 @@ resources:
     <<: *s3-release-params
 
 - name: shibboleth-staging-deployment
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{shibboleth-staging-deployment-bosh-target}}
-    client_id: {{shibboleth-staging-deployment-bosh-client-id}}
+    client: {{shibboleth-staging-deployment-bosh-client-id}}
     client_secret: {{shibboleth-staging-deployment-bosh-client-passphrase}}
     deployment: {{shibboleth-staging-deployment-bosh-deployment}}
 
 - name: shibboleth-production-deployment
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{shibboleth-production-deployment-bosh-target}}
-    client_id: {{shibboleth-production-deployment-bosh-client-id}}
+    client: {{shibboleth-production-deployment-bosh-client-id}}
     client_secret: {{shibboleth-production-deployment-bosh-client-passphrase}}
     deployment: {{shibboleth-production-deployment-bosh-deployment}}
 
@@ -209,10 +209,10 @@ resource_types:
   source:
     repository: cfcommunity/slack-notification-resource
 
-- name: 18f-bosh-deployment
+- name: bosh-deployment
   type: docker-image
   source:
-    repository: 18fgsa/bosh-deployment-resource
+    repository: cloudfoundry/bosh-deployment-resource
 
 - name: s3-iam
   type: docker-image

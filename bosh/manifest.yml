@@ -57,14 +57,14 @@ instance_groups:
           passExpirationDays: 90
         jaas:
           database:
-            dbURL: (( concat "jdbc:postgresql://" terraform_outputs.cf_rds_host "/uaadb" ))
+            dbURL: jdbc:postgresql://((grab terraform_outputs.cf_rds_host))/uaadb
             dbUser: (( grab terraform_outputs.cf_rds_username ))
             dbPassword: (( grab terraform_outputs.cf_rds_password ))
             origin: cloud.gov
             auditTable: sec_audit
         totp:
           database:
-            dbURL: (( concat "jdbc:postgresql://" terraform_outputs.cf_rds_host "/uaadb" ))
+            dbURL: jdbc:postgresql://((grab terraform_outputs.cf_rds_host))/uaadb
             dbUser: (( grab terraform_outputs.cf_rds_username ))
             dbPassword: (( grab terraform_outputs.cf_rds_password ))
             userSeedTable: totp_seed

@@ -15,7 +15,6 @@ jobs:
 - name: deploy-shibboleth-staging
   plan:
   - aggregate:
-    - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
@@ -31,7 +30,6 @@ jobs:
       trigger: true
   - put: shibboleth-staging-deployment
     params:
-      cert: master-bosh-root-cert/master-bosh.crt
       manifest: shibboleth-config/bosh/manifest.yml
       ops_files:
       - shibboleth-config/bosh/opsfiles/staging.yml
@@ -65,7 +63,6 @@ jobs:
 - name: deploy-shibboleth-production
   plan:
   - aggregate:
-    - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
@@ -85,7 +82,6 @@ jobs:
       passed: [deploy-shibboleth-staging]
   - put: shibboleth-production-deployment
     params:
-      cert: master-bosh-root-cert/master-bosh.crt
       manifest: shibboleth-config/bosh/manifest.yml
       ops_files:
       - shibboleth-config/bosh/opsfiles/production.yml
@@ -117,13 +113,6 @@ jobs:
       icon_url: {{slack-icon-url}}
 
 resources:
-- name: master-bosh-root-cert
-  type: s3-iam
-  source:
-    bucket: {{shibboleth-production-private-bucket}}
-    region_name: {{shibboleth-production-private-region}}
-    versioned_file: master-bosh.crt
-
 - name: pipeline-tasks
   type: git
   source:
@@ -174,6 +163,7 @@ resources:
     client: {{shibboleth-staging-deployment-bosh-client-id}}
     client_secret: {{shibboleth-staging-deployment-bosh-client-passphrase}}
     deployment: {{shibboleth-staging-deployment-bosh-deployment}}
+    ca_cert: ((bosh-ca-cert))
 
 - name: shibboleth-production-deployment
   type: bosh-deployment
@@ -182,6 +172,7 @@ resources:
     client: {{shibboleth-production-deployment-bosh-client-id}}
     client_secret: {{shibboleth-production-deployment-bosh-client-passphrase}}
     deployment: {{shibboleth-production-deployment-bosh-deployment}}
+    ca_cert: ((bosh-ca-cert))
 
 - name: slack
   type: slack-notification
@@ -201,7 +192,6 @@ resources:
     bucket: {{tf-state-bucket}}
     versioned_file: {{tf-state-file-production}}
     region_name: {{aws-region}}
-
 
 resource_types:
 - name: slack-notification

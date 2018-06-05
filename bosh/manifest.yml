@@ -1,8 +1,6 @@
 ---
 name: ((deployment_name))
 
-director_uuid: ((director_uuid))
-
 releases:
 - name: shibboleth
   version: latest

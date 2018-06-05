@@ -34,6 +34,7 @@ jobs:
       ops_files:
       - shibboleth-config/bosh/opsfiles/staging.yml
       vars_files:
+      - terraform-yaml/state.yml
       - common-staging/staging-shibboleth-decrypted.yml
       - shibboleth-config/bosh/varsfiles/staging.yml
       releases:
@@ -86,6 +87,7 @@ jobs:
       ops_files:
       - shibboleth-config/bosh/opsfiles/production.yml
       vars_files:
+      - terraform-yaml/state.yml
       - common-production/production-shibboleth-decrypted.yml
       - shibboleth-config/bosh/varsfiles/production.yml
       releases:

@@ -71,6 +71,17 @@ instance_groups:
             userColumn: username
             seedColumn: seed
         port: 8081
+        sslPrivateKey: ((idp_cert.private_key))
+        sslCertificate: ((idp_cert.certificate))
+        signing:
+          cert: ((idp_signing.certificate))
+          key: ((idp_signing.private_key))
+        encryption:
+          cert: ((idp_encryption.certificate))
+          key: ((idp_encryption.private_key))
+        passwords:
+          sealer: ((sealer_password))
+
 
   azs: [z1, z2]
   vm_type: shibboleth

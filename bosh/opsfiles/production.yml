@@ -3,28 +3,25 @@
   value: shibboleth-production
 
 - type: replace
-  path: /instance_groups/name=idp/properties/idp?
-  value: 
-    login:
-      forgotPasswordLink: https://account.fr.cloud.gov/forgot-password
-    totp:
-      issuerName: "cloud.gov"
-    entityID: https://idp.fr.cloud.gov
-    scope: fr.cloud.gov
-    metadata:
-      providers:
-      - id: fr
-        metadataURL: https://login.fr.cloud.gov/saml/metadata
-    sslPrivateKey: ((idp_cert.private_key))
-    sslCertificate: ((idp_cert.certificate))
-    signing: 
-      cert: ((idp_signing.certificate))
-      key: ((idp_signing.private_key))
-    encryption: 
-      cert: ((idp_encryption.certificate))
-      key: ((idp_encryption.private_key))
-    passwords: 
-      sealer: ((sealer_password))
+  path: /instance_groups/name=idp/jobs/name=idp/properties/idp/login/forgotPasswordLink?
+  value: https://account.fr.cloud.gov/forgot-password
+
+- type: replace
+  path: /instance_groups/name=idp/jobs/name=idp/properties/idp/totp/issuerName?
+  value: "cloud.gov"
+
+- type: replace
+  path: /instance_groups/name=idp/jobs/name=idp/properties/idp/entityID?
+  value: https://idp.fr.cloud.gov
+
+- type: replace
+  path: /instance_groups/name=idp/jobs/name=idp/properties/idp/scope?
+  value: fr.cloud.gov
+
+- type: replace
+  path: /instance_groups/name=idp/jobs/name=idp/properties/idp/metadata/providers/id=fr?/metadataURL?
+  value: https://login.fr.cloud.gov/saml/metadata
+
 
 ## Here is an example of stuff you might put in here.
 # instance_groups:

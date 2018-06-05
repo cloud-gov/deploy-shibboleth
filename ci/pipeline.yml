@@ -37,6 +37,7 @@ jobs:
       - shibboleth-config/bosh/opsfiles/staging.yml
       vars_files:
       - common-staging/staging-shibboleth-decrypted.yml
+      - shibboleth-config/bosh/varsfiles/staging.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
@@ -90,6 +91,7 @@ jobs:
       - shibboleth-config/bosh/opsfiles/production.yml
       vars_files:
       - common-production/production-shibboleth-decrypted.yml
+      - shibboleth-config/bosh/varsfiles/production.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz

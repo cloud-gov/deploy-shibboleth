@@ -1,7 +1,7 @@
 ---
-name: (( param "Please configure your deployment name"))
+name: ((deployment_name))
 
-director_uuid: (( param "Please set the UUID of your BOSH Directory" ))
+director_uuid: ((director_uuid))
 
 releases:
 - name: shibboleth

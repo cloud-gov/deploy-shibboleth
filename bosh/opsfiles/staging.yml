@@ -1,0 +1,70 @@
+- type: replace
+  path: /name?
+  value: shibboleth-staging
+
+- type: replace
+  path: /instance_groups/name=idp/properties/idp?
+  value: 
+    login:
+      forgotPasswordLink: https://account.fr-stage.cloud.gov/forgot-password
+    totp:
+      issuerName: "cloud.gov STAGING"
+    entityID: https://idp.fr-stage.cloud.gov
+    scope: fr-stage.cloud.gov
+    metadata:
+      providers:
+      - id: fr-stage
+        metadataURL: https://login.fr-stage.cloud.gov/saml/metadata
+    sslPrivateKey: ((sslPrivateKey))
+    sslCertificate: ((sslCertificate))
+    signing: ((signing))
+    encryption: ((encryption))
+    passwords: ((passwords))
+
+## Here is an example of stuff you might put in here.
+# instance_groups:
+# - name: idp
+#   jobs:
+#   - name: idp
+#     properties:
+#       root:
+#         title: ROOT_TITLE
+#         footer: ROOT_FOOTER
+#       idp:
+#         description: DESCRIPTION
+#         port: PORT_NUMBER
+#         authentication:
+#           failureCount: NUMBER_OF_FAILED_LOGINS_BEFORE_ACCOUT_LOCKOUT
+#           failurePeriodSeconds: FAILED_LOGIN_PERIOD
+#           lockoutPeriodSeconds: ACCOUNT_LOCKOUT_PERIOD
+#           passExpirationDays: PASSWORD_EXPIRATION
+#         title: IDP_PAGE_TITLE
+#         footer: IDP_PAGE_FOOTER
+#         logo:
+#           alt-text: IMAGE_TAG_ALT_TEXT
+#           src: BASE64_IMAGE_DATA_URI
+#         sslPrivateKey: |
+#           -----BEGIN RSA PRIVATE KEY-----
+#           MY PRIVATE KEY
+#           -----END RSA PRIVATE KEY-----
+#         sslCertificate: |
+#           -----BEGIN CERTIFICATE-----
+#           MY CERT
+#           -----END CERTIFICATE-----
+#         signing:
+#           key: |
+#             -----BEGIN RSA PRIVATE KEY-----
+#             MY PRIVATE SAML SIGNING KEY
+#             -----END RSA PRIVATE KEY-----
+#           cert: |
+#             -----BEGIN CERTIFICATE-----
+#             MY SAML SIGNING CERT
+#             -----END CERTIFICATE-----
+#         entityID: https://localhost.localdomain
+#         scope: localdomain
+#         passwords:
+#           sealer: CHANGEME
+#         metadata:
+#           providers:
+#           - id: testshib
+#             metadataURL: https://www.testshib.org/metadata/testshib-providers.xml

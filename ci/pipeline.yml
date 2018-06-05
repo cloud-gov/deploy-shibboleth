@@ -19,8 +19,7 @@ jobs:
     - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
-    - get: common
-      resource: common-staging
+    - get: common-staging
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-staging
@@ -30,19 +29,14 @@ jobs:
       trigger: true
     - get: shibboleth-stemcell
       trigger: true
-  - task: shibboleth-manifest
-    file: shibboleth-config/ci/generate-deployment-manifest.yml
-    params:
-      ENVIRONMENT_FILE: shibboleth-config/shibboleth-staging.yml
-  - task: lint-manifest
-    file: pipeline-tasks/lint-manifest.yml
-    input_mapping:
-      pipeline-config: shibboleth-config
-      lint-manifest: shibboleth-manifest
   - put: shibboleth-staging-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
-      manifest: shibboleth-manifest/manifest.yml
+      manifest: shibboleth-config/bosh/manifest.yml
+      ops_files:
+      - shibboleth-config/bosh/opsfiles/staging.yml
+      vars_files:
+      - common-staging/staging-shibboleth-decrypted.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
@@ -75,8 +69,7 @@ jobs:
     - get: shibboleth-config
       trigger: true
       passed: [deploy-shibboleth-staging]
-    - get: common
-      resource: common-production
+    - get: common-production
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-production
@@ -89,19 +82,14 @@ jobs:
     - get: shibboleth-stemcell
       trigger: true
       passed: [deploy-shibboleth-staging]
-  - task: shibboleth-manifest
-    file: shibboleth-config/ci/generate-deployment-manifest.yml
-    params:
-      ENVIRONMENT_FILE: shibboleth-config/shibboleth-production.yml
-  - task: lint-manifest
-    file: pipeline-tasks/lint-manifest.yml
-    input_mapping:
-      pipeline-config: shibboleth-config
-      lint-manifest: shibboleth-manifest
   - put: shibboleth-production-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
-      manifest: shibboleth-manifest/manifest.yml
+      manifest: shibboleth-config/bosh/manifest.yml
+      ops_files:
+      - shibboleth-config/bosh/opsfiles/production.yml
+      vars_files:
+      - common-production/production-shibboleth-decrypted.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
@@ -141,22 +129,18 @@ resources:
     branch: {{pipeline-tasks-git-branch}}
 
 - name: common-staging
-  type: cg-common
+  type: s3-iam
   source:
-    region: {{shibboleth-staging-private-region}}
-    bucket_name: {{shibboleth-staging-private-bucket}}
-    secrets_file: staging-shibboleth.yml
-    secrets_passphrase: {{shibboleth-staging-private-passphrase}}
-    bosh_cert: bosh.pem
+    region_name: {{shibboleth-staging-private-region}}
+    bucket: {{shibboleth-staging-private-bucket}}
+    versioned_file: staging-shibboleth-decrypted.yml
 
 - name: common-production
-  type: cg-common
+  type: s3-iam
   source:
-    region: {{shibboleth-production-private-region}}
-    bucket_name: {{shibboleth-production-private-bucket}}
-    secrets_file: production-shibboleth.yml
-    secrets_passphrase: {{shibboleth-production-private-passphrase}}
-    bosh_cert: bosh.pem
+    region_name: {{shibboleth-production-private-region}}
+    bucket: {{shibboleth-production-private-bucket}}
+    versioned_file: production-shibboleth-decrypted.yml
 
 - name: shibboleth-config
   type: git
@@ -227,11 +211,6 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/bosh-deployment-resource
-
-- name: cg-common
-  type: docker-image
-  source:
-    repository: 18fgsa/cg-common-resource
 
 - name: s3-iam
   type: docker-image

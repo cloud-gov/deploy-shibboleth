@@ -6,3 +6,4 @@ idp-entityid: https://idp.fr.cloud.gov
 idp-scope: fr.cloud.gov
 provider-id: fr
 metadata-url: https://login.fr.cloud.gov/saml/metadata
+shibboleth-instances: 3

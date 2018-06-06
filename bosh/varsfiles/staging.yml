@@ -6,3 +6,4 @@ idp-entityid: https://idp.fr-stage.cloud.gov
 idp-scope: fr-stage.cloud.gov
 provider-id: fr-stage
 metadata-url: https://login.fr-stage.cloud.gov/saml/metadata
+shibboleth-instances: 2

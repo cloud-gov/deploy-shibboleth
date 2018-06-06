@@ -1,2 +1,8 @@
 deployment_name: shibboleth-staging
 idp_cert_cn: idp.fr-stage.cloud.gov
+forgot-password-url: https://account.fr-stage.cloud.gov/forgot-password
+totp-issuer-name: "cloud.gov STAGING"
+idp-entityid: https://idp.fr-stage.cloud.gov
+idp-scope: fr-stage.cloud.gov
+provider-id: fr-stage
+metadata-url: https://login.fr-stage.cloud.gov/saml/metadata

@@ -1,2 +1,8 @@
 deployment_name: shibboleth-production
 idp_cert_cn: idp.fr.cloud.gov
+forgot-password-url: https://account.fr.cloud.gov/forgot-password
+totp-issuer-name: "cloud.gov"
+idp-entityid: https://idp.fr.cloud.gov
+idp-scope: fr.cloud.gov
+provider-id: fr
+metadata-url: https://login.fr.cloud.gov/saml/metadata

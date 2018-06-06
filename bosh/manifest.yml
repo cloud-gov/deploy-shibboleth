@@ -71,7 +71,7 @@ instance_groups:
             userSeedTable: totp_seed
             userColumn: username
             seedColumn: seed
-            issuerName: ((totp-issuer-name))
+          issuerName: ((totp-issuer-name))
         port: 8081
         sslPrivateKey: ((idp_cert.private_key))
         sslCertificate: ((idp_cert.certificate))

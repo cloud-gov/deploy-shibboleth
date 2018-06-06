@@ -31,8 +31,6 @@ jobs:
   - put: shibboleth-staging-deployment
     params:
       manifest: shibboleth-config/bosh/manifest.yml
-      ops_files:
-      - shibboleth-config/bosh/opsfiles/staging.yml
       vars_files:
       - terraform-yaml/state.yml
       - common-staging/staging-shibboleth-decrypted.yml
@@ -84,8 +82,6 @@ jobs:
   - put: shibboleth-production-deployment
     params:
       manifest: shibboleth-config/bosh/manifest.yml
-      ops_files:
-      - shibboleth-config/bosh/opsfiles/production.yml
       vars_files:
       - terraform-yaml/state.yml
       - common-production/production-shibboleth-decrypted.yml

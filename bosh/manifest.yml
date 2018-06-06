@@ -95,7 +95,7 @@ instance_groups:
   vm_type: shibboleth
   vm_extensions: [shibboleth-lb]
   disk_type: shibboleth
-  instances: 2
+  instances: ((shibboleth-instances))
   networks:
   - name: default
 

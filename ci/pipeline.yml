@@ -33,7 +33,7 @@ jobs:
       manifest: shibboleth-config/bosh/manifest.yml
       vars_files:
       - terraform-yaml/state.yml
-      - common-staging/staging-shibboleth-decrypted.yml
+      - common-staging/staging-shibboleth.yml
       - shibboleth-config/bosh/varsfiles/staging.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
@@ -84,7 +84,7 @@ jobs:
       manifest: shibboleth-config/bosh/manifest.yml
       vars_files:
       - terraform-yaml/state.yml
-      - common-production/production-shibboleth-decrypted.yml
+      - common-production/production-shibboleth.yml
       - shibboleth-config/bosh/varsfiles/production.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
@@ -122,14 +122,14 @@ resources:
   source:
     region_name: {{shibboleth-private-region}}
     bucket: {{shibboleth-private-bucket}}
-    versioned_file: staging-shibboleth-decrypted.yml
+    versioned_file: staging-shibboleth.yml
 
 - name: common-production
   type: s3-iam
   source:
     region_name: {{shibboleth-private-region}}
     bucket: {{shibboleth-private-bucket}}
-    versioned_file: production-shibboleth-decrypted.yml
+    versioned_file: production-shibboleth.yml
 
 - name: shibboleth-config
   type: git

@@ -120,15 +120,15 @@ resources:
 - name: common-staging
   type: s3-iam
   source:
-    region_name: {{shibboleth-staging-private-region}}
-    bucket: {{shibboleth-staging-private-bucket}}
+    region_name: {{shibboleth-private-region}}
+    bucket: {{shibboleth-private-bucket}}
     versioned_file: staging-shibboleth-decrypted.yml
 
 - name: common-production
   type: s3-iam
   source:
-    region_name: {{shibboleth-production-private-region}}
-    bucket: {{shibboleth-production-private-bucket}}
+    region_name: {{shibboleth-private-region}}
+    bucket: {{shibboleth-private-bucket}}
     versioned_file: production-shibboleth-decrypted.yml
 
 - name: shibboleth-config

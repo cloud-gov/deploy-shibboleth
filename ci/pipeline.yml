@@ -26,7 +26,7 @@ jobs:
       trigger: true
     - get: secureproxy-release
       trigger: true
-    - get: shibboleth-stemcell
+    - get: shibboleth-stemcell-xenial
       trigger: true
   - put: shibboleth-staging-deployment
     params:
@@ -39,7 +39,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell/*.tgz
+      - shibboleth-stemcell-xenial/*.tgz
   on_failure:
     put: slack
     params:
@@ -76,7 +76,7 @@ jobs:
     - get: secureproxy-release
       trigger: true
       passed: [deploy-shibboleth-staging]
-    - get: shibboleth-stemcell
+    - get: shibboleth-stemcell-xenial
       trigger: true
       passed: [deploy-shibboleth-staging]
   - put: shibboleth-production-deployment
@@ -90,7 +90,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell/*.tgz
+      - shibboleth-stemcell-xenial/*.tgz
   on_failure:
     put: slack
     params:
@@ -137,10 +137,10 @@ resources:
     uri: {{cg-deploy-shibboleth-git-url}}
     branch: {{cg-deploy-shibboleth-git-branch}}
 
-- name: shibboleth-stemcell
+- name: shibboleth-stemcell-xenial
   type: bosh-io-stemcell
   source:
-    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    name: bosh-aws-xen-hvm-ubuntu-xenial-go_agent
 
 - name: cg-s3-shibboleth-release
   type: s3-iam

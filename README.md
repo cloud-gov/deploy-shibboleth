@@ -57,3 +57,14 @@ For more information on this, take a look
 [cg-provision-totpseed]: https://github.com/18F/cg-provision/blob/master/ci/scripts/create-and-update-db.sh#L27 "GitHub 18F/cg-provision file"
 [cg-provision-storagerecords]: https://github.com/18F/cg-provision/blob/master/ci/scripts/create-and-update-db.sh#L28 "GitHub 18F/cg-provision file"
 [cg-plugin-fork]: https://github.com/18F/Shibboleth-IdP3-TOTP-Auth "GitHub 18F/Shibboleth-IdP3-TOTP-Auth"
+
+## Rotating signing and encryption certificates for Shibboleth
+
+Use bosh interpolate to generate these certs, e.g. for production:
+
+```
+ bosh interpolate --vars-file=bosh/varsfiles/production.yml --vars-store=prod-creds.yml bosh/manifest.yml
+ ```
+
+Be sure to add the bosh ca (which is also the default_ca) as either a vars file argument or just copy and paste into the file `bosh/varsfiles/production.yml`.  The new creds will be stored in `prod-creds.yml`.  Remove the `BEGIN` AND `END` lines from the certs; add these certs to the vars store for shibboleth and deploy.  To finish the rotation, also find and replace these certs in the idp metadata xml for the respective CloudFoundry deployment and deploy CF.
+

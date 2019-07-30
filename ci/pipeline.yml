@@ -14,7 +14,7 @@ groups:
 jobs:
 - name: deploy-shibboleth-staging
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
@@ -61,7 +61,7 @@ jobs:
 
 - name: deploy-shibboleth-production
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true

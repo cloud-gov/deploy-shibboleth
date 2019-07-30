@@ -14,7 +14,7 @@ groups:
 jobs:
 - name: deploy-shibboleth-staging
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
@@ -61,7 +61,7 @@ jobs:
 
 - name: deploy-shibboleth-production
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
     - get: shibboleth-config
       trigger: true
@@ -144,15 +144,17 @@ resources:
 
 - name: cg-s3-shibboleth-release
   type: s3-iam
-  source:
+  source: &s3-release-params
+    bucket: {{s3-bosh-releases-bucket}}
+    region_name: {{aws-region}}
+    private: true
     regexp: shibboleth-(.*).tgz
-    <<: *s3-release-params
 
 - name: secureproxy-release
   type: s3-iam
   source:
-    regexp: secureproxy-(.*).tgz
     <<: *s3-release-params
+    regexp: secureproxy-(.*).tgz
 
 - name: shibboleth-staging-deployment
   type: bosh-deployment
@@ -207,7 +209,3 @@ resource_types:
   source:
     repository: 18fgsa/s3-resource
 
-s3-release-params: &s3-release-params
-  bucket: {{s3-bosh-releases-bucket}}
-  region_name: {{aws-region}}
-  private: true

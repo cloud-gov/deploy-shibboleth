@@ -16,9 +16,7 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline-tasks
-    - get: shibboleth-config
-      trigger: true
-    - get: common-staging
+    - get: shibboleth-deployment-src
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-staging
@@ -30,11 +28,10 @@ jobs:
       trigger: true
   - put: shibboleth-staging-deployment
     params:
-      manifest: shibboleth-config/bosh/manifest.yml
+      manifest: shibboleth-deployment-src/bosh/manifest.yml
       vars_files:
       - terraform-yaml/state.yml
-      - common-staging/staging-shibboleth.yml
-      - shibboleth-config/bosh/varsfiles/staging.yml
+      - shibboleth-deployment-src/bosh/varsfiles/staging.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
@@ -46,24 +43,24 @@ jobs:
       text: |
         :x: FAILED to deploy shibboleth on staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
   on_success:
     put: slack
     params:
       text: |
         :white_check_mark: Successfully deployed shibboleth on staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
 
 - name: deploy-shibboleth-production
   plan:
   - in_parallel:
     - get: pipeline-tasks
-    - get: shibboleth-config
+    - get: shibboleth-deployment-src
       trigger: true
       passed: [deploy-shibboleth-staging]
     - get: common-production
@@ -81,11 +78,11 @@ jobs:
       passed: [deploy-shibboleth-staging]
   - put: shibboleth-production-deployment
     params:
-      manifest: shibboleth-config/bosh/manifest.yml
+      manifest: shibboleth-deployment-src/bosh/manifest.yml
       vars_files:
       - terraform-yaml/state.yml
       - common-production/production-shibboleth.yml
-      - shibboleth-config/bosh/varsfiles/production.yml
+      - shibboleth-deployment-src/bosh/varsfiles/production.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
@@ -97,45 +94,38 @@ jobs:
       text: |
         :x: FAILED to deploy shibboleth on production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
   on_success:
     put: slack
     params:
       text: |
         :white_check_mark: Successfully deployed shibboleth on production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
 
 resources:
 - name: pipeline-tasks
   type: git
   source:
-    uri: {{pipeline-tasks-git-url}}
-    branch: {{pipeline-tasks-git-branch}}
-
-- name: common-staging
-  type: s3-iam
-  source:
-    region_name: {{shibboleth-private-region}}
-    bucket: {{shibboleth-private-bucket}}
-    versioned_file: staging-shibboleth.yml
+    uri: ((pipeline-tasks-git-url))
+    branch: ((pipeline-tasks-git-branch))
 
 - name: common-production
   type: s3-iam
   source:
-    region_name: {{shibboleth-private-region}}
-    bucket: {{shibboleth-private-bucket}}
+    region_name: ((shibboleth-private-region))
+    bucket: ((shibboleth-private-bucket))
     versioned_file: production-shibboleth.yml
 
-- name: shibboleth-config
+- name: shibboleth-deployment-src
   type: git
   source:
-    uri: {{cg-deploy-shibboleth-git-url}}
-    branch: {{cg-deploy-shibboleth-git-branch}}
+    uri: ((cg-deploy-shibboleth-git-url))
+    branch: ((cg-deploy-shibboleth-git-branch))
 
 - name: shibboleth-stemcell-xenial
   type: bosh-io-stemcell
@@ -145,8 +135,8 @@ resources:
 - name: cg-s3-shibboleth-release
   type: s3-iam
   source: &s3-release-params
-    bucket: {{s3-bosh-releases-bucket}}
-    region_name: {{aws-region}}
+    bucket: ((s3-bosh-releases-bucket))
+    region_name: ((aws-region))
     private: true
     regexp: shibboleth-(.*).tgz
 
@@ -159,39 +149,39 @@ resources:
 - name: shibboleth-staging-deployment
   type: bosh-deployment
   source:
-    target: {{shibboleth-staging-deployment-bosh-target}}
-    client: {{shibboleth-staging-deployment-bosh-client-id}}
-    client_secret: {{shibboleth-staging-deployment-bosh-client-passphrase}}
-    deployment: {{shibboleth-staging-deployment-bosh-deployment}}
+    target: ((shibboleth-staging-deployment-bosh-target))
+    client: ((shibboleth-staging-deployment-bosh-client-id))
+    client_secret: ((shibboleth-staging-deployment-bosh-client-passphrase))
+    deployment: ((shibboleth-staging-deployment-bosh-deployment))
     ca_cert: ((bosh-ca-cert))
 
 - name: shibboleth-production-deployment
   type: bosh-deployment
   source:
-    target: {{shibboleth-production-deployment-bosh-target}}
-    client: {{shibboleth-production-deployment-bosh-client-id}}
-    client_secret: {{shibboleth-production-deployment-bosh-client-passphrase}}
-    deployment: {{shibboleth-production-deployment-bosh-deployment}}
+    target: ((shibboleth-production-deployment-bosh-target))
+    client: ((shibboleth-production-deployment-bosh-client-id))
+    client_secret: ((shibboleth-production-deployment-bosh-client-passphrase))
+    deployment: ((shibboleth-production-deployment-bosh-deployment))
     ca_cert: ((bosh-ca-cert))
 
 - name: slack
   type: slack-notification
   source:
-    url: {{slack-webhook-url}}
+    url: ((slack-webhook-url))
 
 - name: terraform-yaml-staging
   type: s3-iam
   source:
-    bucket: {{tf-state-bucket}}
-    versioned_file: {{tf-state-file-staging}}
-    region_name: {{aws-region}}
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-staging))
+    region_name: ((aws-region))
 
 - name: terraform-yaml-production
   type: s3-iam
   source:
-    bucket: {{tf-state-bucket}}
-    versioned_file: {{tf-state-file-production}}
-    region_name: {{aws-region}}
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-production))
+    region_name: ((aws-region))
 
 resource_types:
 - name: slack-notification

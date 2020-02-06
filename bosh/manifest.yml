@@ -90,7 +90,6 @@ instance_groups:
           - id: ((provider-id))
             metadataURL: ((metadata-url))
 
-
   azs: [z1, z2]
   vm_type: shibboleth
   vm_extensions: [shibboleth-lb]
@@ -105,27 +104,12 @@ variables:
 - name: idp_cert
   type: certificate
   options:
-    ca: bosh_ca
     common_name: ((idp_cert_cn))
-# This was originally created with:
-# certstrap request-cert --cn idp-encryption-key --passphrase ''
-# They seem to not have the standard BEGIN/END lines on them, though.
-# So if you want this to match what is in the secrets file now, you will need
-# to generate the certs normally, and then edit them so that the BEGIN/END lines
-# are gone.
 - name: idp_signing
   type: certificate
   options:
-    ca: bosh_ca
     common_name: idp-encryption-key
-# This was originally created with:
-# certstrap request-cert --cn idp-encryption-key --passphrase ''
-# They seem to not have the standard BEGIN/END lines on them, though.
-# So if you want this to match what is in the secrets file now, you will need
-# to generate the certs normally, and then edit them so that the BEGIN/END lines
-# are gone.
 - name: idp_encryption
   type: certificate
   options:
-    ca: bosh_ca
     common_name: idp-encryption-key

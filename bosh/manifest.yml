@@ -104,12 +104,15 @@ variables:
 - name: idp_cert
   type: certificate
   options:
+    ca: bosh_ca
     common_name: ((idp_cert_cn))
 - name: idp_signing
   type: certificate
   options:
+    ca: bosh_ca
     common_name: idp-encryption-key
 - name: idp_encryption
   type: certificate
   options:
+    ca: bosh_ca
     common_name: idp-encryption-key

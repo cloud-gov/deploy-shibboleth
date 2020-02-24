@@ -63,8 +63,6 @@ jobs:
     - get: shibboleth-deployment-src
       trigger: true
       passed: [deploy-shibboleth-staging]
-    - get: common-production
-      trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-production
     - get: cg-s3-shibboleth-release
@@ -81,7 +79,6 @@ jobs:
       manifest: shibboleth-deployment-src/bosh/manifest.yml
       vars_files:
       - terraform-yaml/state.yml
-      - common-production/production-shibboleth.yml
       - shibboleth-deployment-src/bosh/varsfiles/production.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
@@ -113,13 +110,6 @@ resources:
   source:
     uri: ((pipeline-tasks-git-url))
     branch: ((pipeline-tasks-git-branch))
-
-- name: common-production
-  type: s3-iam
-  source:
-    region_name: ((shibboleth-private-region))
-    bucket: ((shibboleth-private-bucket))
-    versioned_file: production-shibboleth.yml
 
 - name: shibboleth-deployment-src
   type: git

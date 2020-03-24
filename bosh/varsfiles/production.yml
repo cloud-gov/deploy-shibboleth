@@ -7,3 +7,5 @@ idp-scope: fr.cloud.gov
 provider-id: fr
 metadata-url: https://login.fr.cloud.gov/saml/metadata
 shibboleth-instances: 3
+disk-type: 5GB
+vm-type: t3.xlarge

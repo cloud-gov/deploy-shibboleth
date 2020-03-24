@@ -91,9 +91,9 @@ instance_groups:
             metadataURL: ((metadata-url))
 
   azs: [z1, z2]
-  vm_type: shibboleth
+  vm_type: ((vm-type))
   vm_extensions: [shibboleth-lb]
-  disk_type: shibboleth
+  disk_type: ((disk-type))
   instances: ((shibboleth-instances))
   networks:
   - name: default

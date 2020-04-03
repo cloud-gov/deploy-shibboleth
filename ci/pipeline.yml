@@ -2,8 +2,12 @@
 groups:
 - name: all
   jobs:
+  - deploy-shibboleth-development
   - deploy-shibboleth-staging
   - deploy-shibboleth-production
+- name: development
+  jobs:
+  - deploy-shibboleth-development
 - name: staging
   jobs:
   - deploy-shibboleth-staging
@@ -12,20 +16,73 @@ groups:
   - deploy-shibboleth-production
 
 jobs:
-- name: deploy-shibboleth-staging
+
+- name: deploy-shibboleth-development
   plan:
   - in_parallel:
     - get: pipeline-tasks
+      params: {depth: 1}
     - get: shibboleth-deployment-src
       trigger: true
+      params: {depth: 1}
     - get: terraform-yaml
-      resource: terraform-yaml-staging
+      resource: terraform-yaml-development
     - get: cg-s3-shibboleth-release
       trigger: true
     - get: secureproxy-release
       trigger: true
     - get: shibboleth-stemcell-xenial
       trigger: true
+  - put: shibboleth-development-deployment
+    params:
+      manifest: shibboleth-deployment-src/bosh/manifest.yml
+      vars_files:
+      - terraform-yaml/state.yml
+      - shibboleth-deployment-src/bosh/varsfiles/development.yml
+      releases:
+      - cg-s3-shibboleth-release/*.tgz
+      - secureproxy-release/*.tgz
+      stemcells:
+      - shibboleth-stemcell-xenial/*.tgz
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy shibboleth in development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed shibboleth in development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: deploy-shibboleth-staging
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+      params: {depth: 1}
+    - get: shibboleth-deployment-src
+      trigger: true
+      passed: [deploy-shibboleth-development]
+      params: {depth: 1}
+    - get: terraform-yaml
+      resource: terraform-yaml-staging
+    - get: cg-s3-shibboleth-release
+      trigger: true
+      passed: [deploy-shibboleth-development]
+    - get: secureproxy-release
+      trigger: true
+      passed: [deploy-shibboleth-development]
+    - get: shibboleth-stemcell-xenial
+      trigger: true
+      passed: [deploy-shibboleth-development]
   - put: shibboleth-staging-deployment
     params:
       manifest: shibboleth-deployment-src/bosh/manifest.yml
@@ -60,9 +117,11 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline-tasks
+      params: {depth: 1}
     - get: shibboleth-deployment-src
       trigger: true
       passed: [deploy-shibboleth-staging]
+      params: {depth: 1}
     - get: terraform-yaml
       resource: terraform-yaml-production
     - get: cg-s3-shibboleth-release
@@ -136,6 +195,15 @@ resources:
     <<: *s3-release-params
     regexp: secureproxy-(.*).tgz
 
+- name: shibboleth-development-deployment
+  type: bosh-deployment
+  source:
+    target: ((shibboleth-development-deployment-bosh-target))
+    client: ((shibboleth-development-deployment-bosh-client-id))
+    client_secret: ((shibboleth-development-deployment-bosh-client-passphrase))
+    deployment: ((shibboleth-development-deployment-bosh-deployment))
+    ca_cert: ((bosh-ca-cert))
+
 - name: shibboleth-staging-deployment
   type: bosh-deployment
   source:
@@ -158,6 +226,13 @@ resources:
   type: slack-notification
   source:
     url: ((slack-webhook-url))
+
+- name: terraform-yaml-development
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-development))
+    region_name: ((aws-region))
 
 - name: terraform-yaml-staging
   type: s3-iam

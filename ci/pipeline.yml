@@ -150,7 +150,7 @@ jobs:
       text: |
         :x: FAILED to deploy shibboleth on production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel))
+      channel: ((slack-channel-fatal-error))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
   on_success:

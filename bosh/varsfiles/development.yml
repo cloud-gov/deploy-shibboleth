@@ -6,6 +6,6 @@ idp-entityid: https://idp.dev.us-gov-west-1.aws-us-gov.cloud.gov
 idp-scope: dev.us-gov-west-1.aws-us-gov.cloud.gov
 provider-id: dev.us-gov-west-1.aws-us-gov
 metadata-url: https://login.dev.us-gov-west-1.aws-us-gov.cloud.gov/saml/metadata
-shibboleth-instances: 1
+shibboleth-instances: 2
 disk-type: 5GB
 vm-type: t3.medium

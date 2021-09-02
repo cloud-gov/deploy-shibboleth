@@ -31,7 +31,7 @@ jobs:
       trigger: true
     - get: secureproxy-release
       trigger: true
-    - get: shibboleth-stemcell-xenial
+    - get: shibboleth-stemcell-bionic
       trigger: true
   - put: shibboleth-development-deployment
     params:
@@ -43,7 +43,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell-xenial/*.tgz
+      - shibboleth-stemcell-bionic/*.tgz
   on_failure:
     put: slack
     params:
@@ -80,7 +80,7 @@ jobs:
     - get: secureproxy-release
       trigger: true
       passed: [deploy-shibboleth-development]
-    - get: shibboleth-stemcell-xenial
+    - get: shibboleth-stemcell-bionic
       trigger: true
       passed: [deploy-shibboleth-development]
   - put: shibboleth-staging-deployment
@@ -93,7 +93,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell-xenial/*.tgz
+      - shibboleth-stemcell-bionic/*.tgz
   on_failure:
     put: slack
     params:
@@ -130,7 +130,7 @@ jobs:
     - get: secureproxy-release
       trigger: true
       passed: [deploy-shibboleth-staging]
-    - get: shibboleth-stemcell-xenial
+    - get: shibboleth-stemcell-bionic
       trigger: true
       passed: [deploy-shibboleth-staging]
   - put: shibboleth-production-deployment
@@ -143,7 +143,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell-xenial/*.tgz
+      - shibboleth-stemcell-bionic/*.tgz
   on_failure:
     put: slack
     params:
@@ -176,10 +176,10 @@ resources:
     uri: ((cg-deploy-shibboleth-git-url))
     branch: ((cg-deploy-shibboleth-git-branch))
 
-- name: shibboleth-stemcell-xenial
+- name: shibboleth-stemcell-bionic
   type: bosh-io-stemcell
   source:
-    name: bosh-aws-xen-hvm-ubuntu-xenial-go_agent
+    name: bosh-aws-xen-hvm-ubuntu-bionic-go_agent
 
 - name: cg-s3-shibboleth-release
   type: s3-iam
@@ -263,4 +263,3 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/s3-resource
-

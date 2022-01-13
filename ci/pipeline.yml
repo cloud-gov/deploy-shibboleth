@@ -263,6 +263,56 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: deploy-shibboleth-eastb
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+      params: {depth: 1}
+    - get: shibboleth-deployment-src
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+      params: {depth: 1}
+    - get: terraform-yaml
+      resource: terraform-yaml-eastb
+    - get: cg-s3-shibboleth-release
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+    - get: secureproxy-release
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+    - get: shibboleth-stemcell-bionic
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+  - put: shibboleth-eastb-deployment
+    params:
+      manifest: shibboleth-deployment-src/bosh/manifest.yml
+      vars_files:
+      - terraform-yaml/state.yml
+      - shibboleth-deployment-src/bosh/varsfiles/eastb.yml
+      releases:
+      - cg-s3-shibboleth-release/*.tgz
+      - secureproxy-release/*.tgz
+      stemcells:
+      - shibboleth-stemcell-bionic/*.tgz
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy shibboleth on eastb
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel-fatal-error))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed shibboleth on eastb
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 resources:
 - name: pipeline-tasks
   type: git
@@ -338,6 +388,15 @@ resources:
     client: ((shibboleth-easta-deployment-bosh-client-id))
     client_secret: ((shibboleth-easta-deployment-bosh-client-passphrase))
     deployment: ((shibboleth-easta-deployment-bosh-deployment))
+    ca_cert: ((bosh-ca-cert))
+
+- name: shibboleth-eastb-deployment
+  type: bosh-deployment
+  source:
+    target: ((shibboleth-eastb-deployment-bosh-target))
+    client: ((shibboleth-eastb-deployment-bosh-client-id))
+    client_secret: ((shibboleth-eastb-deployment-bosh-client-passphrase))
+    deployment: ((shibboleth-eastb-deployment-bosh-deployment))
     ca_cert: ((bosh-ca-cert))
 
 - name: slack

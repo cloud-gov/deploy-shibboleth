@@ -5,6 +5,10 @@ groups:
   - deploy-shibboleth-development
   - deploy-shibboleth-staging
   - deploy-shibboleth-production
+  - deploy-shibboleth-westb
+  - deploy-shibboleth-westc
+  - deploy-shibboleth-easta
+  - deploy-shibboleth-eastb
 - name: development
   jobs:
   - deploy-shibboleth-development
@@ -14,6 +18,16 @@ groups:
 - name: production
   jobs:
   - deploy-shibboleth-production
+  - deploy-shibboleth-westb
+  - deploy-shibboleth-westc
+  - deploy-shibboleth-easta
+  - deploy-shibboleth-eastb
+- name: west-and-east
+  jobs:
+  - deploy-shibboleth-westb
+  - deploy-shibboleth-westc
+  - deploy-shibboleth-easta
+  - deploy-shibboleth-eastb
 
 jobs:
 
@@ -263,6 +277,56 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: deploy-shibboleth-westc
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+      params: {depth: 1}
+    - get: shibboleth-deployment-src
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+      params: {depth: 1}
+    - get: terraform-yaml
+      resource: terraform-yaml-westc
+    - get: cg-s3-shibboleth-release
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+    - get: secureproxy-release
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+    - get: shibboleth-stemcell-bionic
+      trigger: true
+      passed: [deploy-shibboleth-staging]
+  - put: shibboleth-westc-deployment
+    params:
+      manifest: shibboleth-deployment-src/bosh/manifest.yml
+      vars_files:
+      - terraform-yaml/state.yml
+      - shibboleth-deployment-src/bosh/varsfiles/westc.yml
+      releases:
+      - cg-s3-shibboleth-release/*.tgz
+      - secureproxy-release/*.tgz
+      stemcells:
+      - shibboleth-stemcell-bionic/*.tgz
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy shibboleth on westc
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel-fatal-error))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed shibboleth on westc
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 - name: deploy-shibboleth-eastb
   plan:
   - in_parallel:
@@ -381,6 +445,15 @@ resources:
     deployment: ((shibboleth-westb-deployment-bosh-deployment))
     ca_cert: ((bosh-ca-cert))
 
+- name: shibboleth-westc-deployment
+  type: bosh-deployment
+  source:
+    target: ((shibboleth-westc-deployment-bosh-target))
+    client: ((shibboleth-westc-deployment-bosh-client-id))
+    client_secret: ((shibboleth-westc-deployment-bosh-client-passphrase))
+    deployment: ((shibboleth-westc-deployment-bosh-deployment))
+    ca_cert: ((bosh-ca-cert))
+
 - name: shibboleth-easta-deployment
   type: bosh-deployment
   source:
@@ -423,6 +496,34 @@ resources:
   source:
     bucket: ((tf-state-bucket))
     versioned_file: ((tf-state-file-production))
+    region_name: ((aws-region))
+
+- name: terraform-yaml-westb
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-westb))
+    region_name: ((aws-region))
+
+- name: terraform-yaml-westc
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-westc))
+    region_name: ((aws-region))
+
+- name: terraform-yaml-easta
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-easta))
+    region_name: ((aws-region))
+
+- name: terraform-yaml-eastb
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-eastb))
     region_name: ((aws-region))
 
 resource_types:

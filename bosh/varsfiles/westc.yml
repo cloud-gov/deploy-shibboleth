@@ -1,0 +1,11 @@
+deployment_name: shibboleth-westc
+idp_cert_cn: idp.fr.wc.cloud.gov
+forgot-password-url: https://account.fr.wc.cloud.gov/forgot-password
+totp-issuer-name: "cloud.gov westc"
+idp-entityid: https://idp.fr.wc.cloud.gov
+idp-scope: fr.wc.cloud.gov
+provider-id: fr
+metadata-url: https://login.fr.wc.cloud.gov/saml/metadata
+shibboleth-instances: 3
+disk-type: 5GB
+vm-type: t3.xlarge

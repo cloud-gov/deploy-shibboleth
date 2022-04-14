@@ -9,3 +9,4 @@ metadata-url: https://login.fr-stage.cloud.gov/saml/metadata
 shibboleth-instances: 2
 disk-type: 5GB
 vm-type: t3.large
+use-idp4: false

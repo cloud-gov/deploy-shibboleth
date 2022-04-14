@@ -9,3 +9,4 @@ metadata-url: https://login.dev.us-gov-west-1.aws-us-gov.cloud.gov/saml/metadata
 shibboleth-instances: 2
 disk-type: 5GB
 vm-type: t3.medium
+use-idp4: true

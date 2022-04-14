@@ -85,6 +85,7 @@ instance_groups:
           sealer: ((sealer_password))
         entityID: ((idp-entityid))
         scope: ((idp-scope))
+        use_idp4: ((use-idp4))
         metadata:
           providers:
           - id: ((provider-id))

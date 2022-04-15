@@ -4,3 +4,6 @@ certs
 credentials.yml
 
 tmp/
+venv
+__pycache__
+.pytest_cache

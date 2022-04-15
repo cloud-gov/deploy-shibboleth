@@ -44,6 +44,16 @@ jobs:
       - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell-bionic/*.tgz
+  - task: acceptance-tests
+    file: shibboleth-deployment-src/ci/acceptance_tests.yml
+    params:
+        UAA_USER: ((uaa-user))
+        UAA_SECRET: ((uaa-client-secret-development))
+        UAA_URL: ((uaa-base-url-development))
+        IDP_URL: ((idp-base-url-development))
+        UAA_TARGET: ((uaa-target-url-development))
+        EXTRAS_URL: ((uaa-extras-url-development))
+        IDP_NAME: ((idp-provider-origin-development))
   on_failure:
     put: slack
     params:
@@ -94,6 +104,16 @@ jobs:
       - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell-bionic/*.tgz
+  - task: acceptance-tests
+    file: shibboleth-deployment-src/ci/acceptance_tests.yml
+    params:
+        UAA_USER: ((uaa-user))
+        UAA_SECRET: ((uaa-client-secret-staging))
+        UAA_URL: ((uaa-base-url-staging))
+        IDP_URL: ((idp-base-url-staging))
+        UAA_TARGET: ((uaa-target-url-staging))
+        EXTRAS_URL: ((uaa-extras-url-staging))
+        IDP_NAME: ((idp-provider-origin-staging))
   on_failure:
     put: slack
     params:
@@ -144,6 +164,16 @@ jobs:
       - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell-bionic/*.tgz
+  - task: acceptance-tests
+    file: shibboleth-deployment-src/ci/acceptance_tests.yml
+    params:
+        UAA_USER: ((uaa-user))
+        UAA_SECRET: ((uaa-client-secret-production))
+        UAA_URL: ((uaa-base-url-production))
+        IDP_URL: ((idp-base-url-production))
+        UAA_TARGET: ((uaa-target-url-production))
+        EXTRAS_URL: ((uaa-extras-url-production))
+        IDP_NAME: ((idp-provider-origin-production))
   on_failure:
     put: slack
     params:

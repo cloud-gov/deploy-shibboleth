@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 import pytest
 
 from .uaaclient import UAAClient
-from .integration_test import IntegrationTestClient
+from .integration_test import IntegrationTestClient, get_csrf_for_form
 
 
 @pytest.fixture
@@ -113,13 +113,15 @@ def test_no_login_with_bad_password(unauthenticated, config, user):
     soup = BeautifulSoup(response.text, features="html.parser")
     form = soup.find("form")
     next_url = form.attrs["action"]
-    response = unauthenticated.idp_start_log_in(next_url)
+    csrf = get_csrf_for_form(form)
+    response = unauthenticated.idp_start_log_in(next_url, csrf)
     assert response.status_code == 200
 
     soup = BeautifulSoup(response.text, features="html.parser")
     form = soup.find("form")
     next_url = form.attrs["action"]
-    response = unauthenticated.idp_username_password_login(next_url, user["name"], "bad-password")
+    csrf = get_csrf_for_form(form)
+    response = unauthenticated.idp_username_password_login(next_url, user["name"], "bad-password", csrf)
     assert response.status_code == 200
     assert "invalid username or password" in response.text.lower()
 
@@ -137,13 +139,15 @@ def test_no_login_with_bad_totp(unauthenticated, config, user):
     soup = BeautifulSoup(response.text, features="html.parser")
     form = soup.find("form")
     next_url = form.attrs["action"]
-    response = unauthenticated.idp_start_log_in(next_url)
+    csrf = get_csrf_for_form(form)
+    response = unauthenticated.idp_start_log_in(next_url, csrf)
     assert response.status_code == 200
 
     soup = BeautifulSoup(response.text, features="html.parser")
     form = soup.find("form")
     next_url = form.attrs["action"]
-    response = unauthenticated.idp_username_password_login(next_url, user["name"], user["password"])
+    csrf = get_csrf_for_form(form)
+    response = unauthenticated.idp_username_password_login(next_url, user["name"], user["password"], csrf)
     assert response.status_code == 200
     soup = BeautifulSoup(response.text, features="html.parser")
     form = soup.find("form")

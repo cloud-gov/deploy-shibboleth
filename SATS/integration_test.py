@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import pyotp
 import requests
 
+# CSRF Element looks like <input type="hidden" name="csrf_token" value="_97d8d610c343b1cdd5386aedfcc5451d2ec32e97">
 
 class IntegrationTestClient:
     def __init__(self, extras_url, idp_url, uaa_url, idp_name) -> None:
@@ -38,7 +39,7 @@ class IntegrationTestClient:
         return r
 
 
-    def idp_start_log_in(self, url):
+    def idp_start_log_in(self, url, csrf):
         payload = {
             "shib_idp_ls_exception.shib_idp_session_ss": "",
             "shib_idp_ls_success.shib_idp_session_ss": "false",
@@ -49,15 +50,19 @@ class IntegrationTestClient:
             "shib_idp_ls_supported": "true",
             "_eventId_proceed": "",
         }
+        if csrf is not None:
+            payload["csrf_token"] = csrf
         r = self.s.post(f"{self.idp_url}{url}", data=payload)
         return r
 
-    def idp_username_password_login(self, url, username, password):
+    def idp_username_password_login(self, url, username, password, csrf):
         payload = {
             "j_username": username,
             "j_password": password,
             "_eventId_proceed": "",
         }
+        if csrf is not None:
+            payload["csrf_token"] = csrf
         r = self.s.post(f"{self.idp_url}{url}", data=payload)
         return r
 
@@ -65,6 +70,7 @@ class IntegrationTestClient:
         totp_updated = False
         soup = BeautifulSoup(body, features="html.parser")
         form = soup.find("form")
+        csrf = get_csrf_for_form(form)
         next_url = form.attrs["action"]
         if totp_seed is not None:
             totp = pyotp.TOTP(totp_seed)
@@ -77,15 +83,20 @@ class IntegrationTestClient:
                 "_eventId_proceed": "",
                 "state": "$state",
             }
+            if csrf is not None:
+                payload["csrf_token"] = csrf
             r = self.s.post(f"{self.idp_url}{next_url}", data=payload)
             soup = BeautifulSoup(r.text, features="html.parser")
             form = soup.find("form")
+            csrf = get_csrf_for_form(form)
             next_url = form.attrs["action"]
         payload = {
             "j_tokenNumber": totp.now(),
             "_eventId_proceed": "",
             "state": "$state",
         }
+        if csrf is not None:
+            payload["csrf_token"] = csrf
         r = self.s.post(f"{self.idp_url}{next_url}", data=payload)
         return totp_seed, totp_updated, r
 
@@ -101,19 +112,25 @@ class IntegrationTestClient:
         soup = BeautifulSoup(r.text, features="html.parser")
         form = soup.find("form")
         next_url = form.attrs["action"]
+        csrf = get_csrf_for_form(form)
 
-        r = self.idp_start_log_in(next_url)
+        r = self.idp_start_log_in(next_url, csrf)
         soup = BeautifulSoup(r.text, features="html.parser")
         form = soup.find("form")
         next_url = form.attrs["action"]
-        r = self.idp_username_password_login(next_url, username, password)
+        csrf = get_csrf_for_form(form)
+        r = self.idp_username_password_login(next_url, username, password, csrf)
         totp_seed, totp_updated, r = self.idp_totp_login(r.text, totp_seed)
 
         soup = BeautifulSoup(r.text, features="html.parser")
         saml_request = soup.find(attrs={"name": "SAMLResponse"}).attrs["value"]
         relay_state = soup.find(attrs={"name": "RelayState"}).attrs["value"]
-        action = soup.find("form").attrs["action"]
+        form = soup.find("form")
+        action = form.attrs["action"]
+        csrf = get_csrf_for_form(form)
         payload = dict(RelayState=relay_state, SAMLRequest=saml_request)
+        if csrf is not None:
+            payload["csrf_token"] = csrf
         r = self.s.post(action, data=payload)
         r = self.s.get(self.uaa_url)
         return totp_seed, totp_updated
@@ -121,3 +138,10 @@ class IntegrationTestClient:
     def log_out(self) -> None:
         self.s.get(f"{self.uaa_url}/logout.do")
         self.s = requests.Session()
+
+def get_csrf_for_form(form):
+    def is_csrf_token(input):
+        return input.has_attr("name") and input.attrs["name"] == "csrf_token"
+    token_input = form.find(is_csrf_token)
+    if token_input is not None:
+        return token_input.attrs["value"]

@@ -31,7 +31,7 @@ jobs:
       trigger: true
     - get: secureproxy-release
       trigger: true
-    - get: shibboleth-stemcell-jammy
+    - get: shibboleth-stemcell-bionic
       trigger: true
   - put: shibboleth-development-deployment
     params:
@@ -43,7 +43,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell-jammy/*.tgz
+      - shibboleth-stemcell-bionic/*.tgz
   - task: acceptance-tests
     file: shibboleth-deployment-src/ci/acceptance_tests.yml
     params:
@@ -90,7 +90,7 @@ jobs:
     - get: secureproxy-release
       trigger: true
       passed: [deploy-shibboleth-development]
-    - get: shibboleth-stemcell-jammy
+    - get: shibboleth-stemcell-bionic
       trigger: true
       passed: [deploy-shibboleth-development]
   - put: shibboleth-staging-deployment
@@ -103,7 +103,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell-jammy/*.tgz
+      - shibboleth-stemcell-bionic/*.tgz
   - task: acceptance-tests
     file: shibboleth-deployment-src/ci/acceptance_tests.yml
     params:
@@ -150,7 +150,7 @@ jobs:
     - get: secureproxy-release
       trigger: true
       passed: [deploy-shibboleth-staging]
-    - get: shibboleth-stemcell-jammy
+    - get: shibboleth-stemcell-bionic
       trigger: true
       passed: [deploy-shibboleth-staging]
   - put: shibboleth-production-deployment
@@ -163,7 +163,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell-jammy/*.tgz
+      - shibboleth-stemcell-bionic/*.tgz
   - task: acceptance-tests
     file: shibboleth-deployment-src/ci/acceptance_tests.yml
     params:
@@ -208,10 +208,10 @@ resources:
     branch: ((cg-deploy-shibboleth-git-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
-- name: shibboleth-stemcell-jammy
+- name: shibboleth-stemcell-bionic
   type: bosh-io-stemcell
   source:
-    name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
+    name: bosh-aws-xen-hvm-ubuntu-bionic-go_agent
 
 - name: cg-s3-shibboleth-release
   type: s3-iam

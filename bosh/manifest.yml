@@ -99,6 +99,7 @@ instance_groups:
   networks:
   - name: default
 
+
 variables:
 - name: sealer_password
   type: password

@@ -32,6 +32,8 @@ instance_groups:
         rules:
         - 'suppress gen_id 1, sig_id 38993'
         - 'drop tcp any any -> any $HTTP_PORTS (msg:"SQL use of sleep function in HTTP header - likely SQL injection attempt"; flow:established,to_server; content:"User-Agent|3A| "; http_header; content:"sleep("; fast_pattern; nocase; http_header; pcre:"/User-Agent\x3A\x20[^\r\n]*sleep\x28/Hi"; metadata:policy balanced-ips drop, policy max-detect-ips drop, policy security-ips drop, ruleset community, service http; reference:url,blog.cloudflare.com/the-sleepy-user-agent/; classtype:web-application-attack; sid:38993000; rev:9;)'
+        - 'suppress gen_id 1, sig_id 59934'
+        - 'drop tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"SERVER-WEBAPP Atlassian Confluence OGNL expression injection attempt"; flow:to_server,established; content:"${"; fast_pattern; http_uri; content:"java"; distance:0; http_uri; content:"|28|"; distance:0; http_uri; content:"}"; distance:0; http_uri; pcre:"/\x24\x7b[^\x7d]*?javax?\x2e[^\x7d]*?\x28/Ui"; metadata:policy balanced-ips drop, policy max-detect-ips drop, policy security-ips drop, ruleset community, service http; reference:cve,2022-26134; classtype:attempted-user; sid:59934000; rev:2;)'
 
   - name: secureproxy
     release: secureproxy

@@ -6,6 +6,8 @@ releases:
   version: latest
 - name: secureproxy
   version: latest
+- name: jammy-snort
+  version: latest
 
 update:
   canaries: 1
@@ -23,6 +25,14 @@ instance_groups:
 - name: idp
   stemcell: default
   jobs:
+  - name: snort-config
+    release: jammy-snort
+    properties:
+      snort:
+        rules:
+        - 'suppress gen_id 1, sig_id 38993'
+        - 'drop tcp any any -> any $HTTP_PORTS (msg:"SQL use of sleep function in HTTP header - likely SQL injection attempt"; flow:established,to_server; content:"User-Agent|3A| "; http_header; content:"sleep("; fast_pattern; nocase; http_header; pcre:"/User-Agent\x3A\x20[^\r\n]*sleep\x28/Hi"; metadata:policy balanced-ips drop, policy max-detect-ips drop, policy security-ips drop, ruleset community, service http; reference:url,blog.cloudflare.com/the-sleepy-user-agent/; classtype:web-application-attack; sid:38993000; rev:9;)'
+
   - name: secureproxy
     release: secureproxy
     properties:

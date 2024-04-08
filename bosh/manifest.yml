@@ -42,6 +42,8 @@ instance_groups:
         - 'drop tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"SERVER-WEBAPP DD-WRT httpd cgi-bin remote command execution attempt"; flow:to_server,established; content:"/cgi-bin/"; depth:10; nocase; http_uri; content:"${IFS}"; fast_pattern:only; http_uri; metadata:policy balanced-ips drop, policy max-detect-ips drop, policy security-ips drop, ruleset community, service http; reference:bugtraq,35742; reference:bugtraq,94819; reference:cve,2009-2765; reference:cve,2016-6277; classtype:attempted-admin; sid:2627500; rev:5;)'
         - 'suppress gen_id 1, sig_id 44687'
         - 'drop tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"SERVER-WEBAPP Netgear DGN1000 series routers authentication bypass attempt"; flow:to_server,established; content:"/setup.cgi"; nocase; http_uri; content:"currentsetting.htm"; fast_pattern:only; http_uri; metadata:policy balanced-ips drop, policy max-detect-ips drop, policy security-ips drop, ruleset community, service http; reference:bugtraq,60281; reference:url,www.exploit-db.com/exploits/25978/; classtype:attempted-admin; sid:44687000; rev:3;)'
+        - 'suppress gen_id 1, sig_id 41495'
+        - 'drop tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"SERVER-WEBAPP WordPress get_post authentication bypass attempt"; flow:to_server,established; content:"/wp-json/"; fast_pattern:only; http_uri; content:"id="; nocase; http_uri; pcre:"/[?&]id=[^&]*?[^\d&]/Ui"; metadata:policy balanced-ips drop, policy connectivity-ips drop, policy max-detect-ips drop, policy security-ips drop, ruleset community, service http; reference:url,wordpress.org/news/2017/01/wordpress-4-7-2-security-release/; classtype:web-application-attack; sid:41495000; rev:2;)'
 
   - name: secureproxy
     release: secureproxy

@@ -315,9 +315,13 @@ resource_types:
     tag: latest
 
 - name: bosh-deployment
-  type: docker-image
+  type: registry-image
   source:
-    repository: cloudfoundry/bosh-deployment-resource
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: bosh-deployment-resource
+    aws_region: us-gov-west-1
+    tag: latest
 
 - name: s3-iam
   type: registry-image
@@ -334,5 +338,14 @@ resource_types:
     aws_access_key_id: ((ecr_aws_key))
     aws_secret_access_key: ((ecr_aws_secret))
     repository: git-resource
+    aws_region: us-gov-west-1
+    tag: latest
+
+- name: bosh-io-stemcell
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: bosh-io-stemcell-resource
     aws_region: us-gov-west-1
     tag: latest

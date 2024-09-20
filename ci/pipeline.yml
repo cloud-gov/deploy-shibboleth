@@ -224,6 +224,7 @@ resources:
   source: &s3-release-params
     bucket: ((s3-bosh-releases-bucket))
     region_name: ((aws-region))
+    endpoint: s3-fips.((aws-region)).amazonaws.com
     private: true
     regexp: shibboleth-(.*).tgz
 
@@ -271,6 +272,7 @@ resources:
     bucket: ((tf-state-bucket))
     versioned_file: ((tf-state-file-development))
     region_name: ((aws-region))
+    endpoint: s3-fips.((aws-region)).amazonaws.com
 
 - name: terraform-yaml-staging
   type: s3-iam
@@ -278,6 +280,7 @@ resources:
     bucket: ((tf-state-bucket))
     versioned_file: ((tf-state-file-staging))
     region_name: ((aws-region))
+    endpoint: s3-fips.((aws-region)).amazonaws.com
 
 - name: terraform-yaml-production
   type: s3-iam
@@ -285,6 +288,7 @@ resources:
     bucket: ((tf-state-bucket))
     versioned_file: ((tf-state-file-production))
     region_name: ((aws-region))
+    endpoint: s3-fips.((aws-region)).amazonaws.com
 
 - name: general-task
   type: registry-image

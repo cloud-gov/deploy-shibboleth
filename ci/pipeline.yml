@@ -34,6 +34,8 @@ jobs:
     - get: shibboleth-stemcell-jammy
       trigger: true
     - get: general-task
+    - get: wazuh-agent
+      trigger: true
   - put: shibboleth-development-deployment
     params:
       manifest: shibboleth-deployment-src/bosh/manifest.yml
@@ -45,6 +47,11 @@ jobs:
       - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell-jammy/*.tgz
+      ops_files:
+      - wazuh-agent/ops/add-wazuh-agent.yml
+      vars:
+        environment: dev
+        wazuh_server_address: wazuh-server.service.cf.internal
   - task: acceptance-tests
     image: general-task
     file: shibboleth-deployment-src/ci/acceptance_tests.yml
@@ -294,6 +301,21 @@ resources:
     repository: general-task
     aws_region: us-gov-west-1
     tag: latest
+
+- name: wazuh-agent
+  type: git
+  source:
+    branch: main
+    commit_verification_keys: ((cloud-gov-pgp-keys))
+    git_config:
+    - name: "user.name"
+      value: "cg-ci-bot"
+    - name: "user.email"
+      value: "no-reply@cloud.gov"
+    paths: [ops/add-wazuh-agent.yml]
+    private_key: ((cg-ci-bot-sshkey.private_key))
+    uri: git@github.com:cloud-gov/wazuh-agent.git
+    username: cg-ci-bot
 
 resource_types:
 - name: registry-image

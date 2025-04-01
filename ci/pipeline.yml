@@ -49,9 +49,8 @@ jobs:
       - shibboleth-stemcell-jammy/*.tgz
       ops_files:
       - wazuh-agent/ops/add-wazuh-agent.yml
-      vars:
-        environment: dev
-        wazuh_server_address: wazuh-server.service.cf.internal
+      vars_files:
+      - wazuh-agent/manifest/dev-vars.yml
   - task: acceptance-tests
     image: general-task
     file: shibboleth-deployment-src/ci/acceptance_tests.yml
@@ -312,7 +311,9 @@ resources:
       value: "cg-ci-bot"
     - name: "user.email"
       value: "no-reply@cloud.gov"
-    paths: [ops/add-wazuh-agent.yml]
+    paths: 
+    - manifest/dev-vars.yml
+    - ops/add-wazuh-agent.yml
     private_key: ((cg-ci-bot-sshkey.private_key))
     uri: git@github.com:cloud-gov/wazuh-agent.git
     username: cg-ci-bot

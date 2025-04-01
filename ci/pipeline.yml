@@ -42,15 +42,14 @@ jobs:
       vars_files:
       - terraform-yaml/state.yml
       - shibboleth-deployment-src/bosh/varsfiles/development.yml
+      - wazuh-agent/manifest/dev-vars.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell-jammy/*.tgz
       ops_files:
-      - wazuh-agent/ops/add-wazuh-agent.yml
-      vars_files:
-      - wazuh-agent/manifest/dev-vars.yml
+      - wazuh-agent/ops/add-wazuh-agent.yml  
   - task: acceptance-tests
     image: general-task
     file: shibboleth-deployment-src/ci/acceptance_tests.yml

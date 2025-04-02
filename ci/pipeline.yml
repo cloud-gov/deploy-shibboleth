@@ -36,22 +36,22 @@ jobs:
     - get: general-task
     - get: wazuh-agent
       trigger: true
+    - get: wazuh-agent-release
+      trigger: true
   - put: shibboleth-development-deployment
     params:
       manifest: shibboleth-deployment-src/bosh/manifest.yml
       vars_files:
       - terraform-yaml/state.yml
       - shibboleth-deployment-src/bosh/varsfiles/development.yml
+      - wazuh-agent/manifest/dev-vars.yml
       releases:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
       - shibboleth-stemcell-jammy/*.tgz
       ops_files:
-      - wazuh-agent/ops/add-wazuh-agent.yml
-      vars:
-        environment: dev
-        wazuh_server_address: wazuh-server.service.cf.internal
+      - wazuh-agent/ops/add-wazuh-agent.yml  
   - task: acceptance-tests
     image: general-task
     file: shibboleth-deployment-src/ci/acceptance_tests.yml
@@ -312,10 +312,18 @@ resources:
       value: "cg-ci-bot"
     - name: "user.email"
       value: "no-reply@cloud.gov"
-    paths: [ops/add-wazuh-agent.yml]
+    paths: 
+    - manifest/dev-vars.yml
+    - ops/add-wazuh-agent.yml
     private_key: ((cg-ci-bot-sshkey.private_key))
     uri: git@github.com:cloud-gov/wazuh-agent.git
     username: cg-ci-bot
+
+- name: wazuh-agent-release
+  type: s3-iam
+  source:
+    <<: *s3-release-params
+    regexp: wazuh-agent-(.*).tgz
 
 resource_types:
 - name: registry-image

@@ -51,7 +51,7 @@ jobs:
       stemcells:
       - shibboleth-stemcell-jammy/*.tgz
       ops_files:
-      - wazuh-agent/ops/add-wazuh-agent.yml  
+      - wazuh-agent/ops/add-wazuh-agent.yml
   - task: acceptance-tests
     image: general-task
     file: shibboleth-deployment-src/ci/acceptance_tests.yml
@@ -68,15 +68,6 @@ jobs:
     params:
       text: |
         :x: FAILED to deploy shibboleth in development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Successfully deployed shibboleth in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: '#cg-platform-news'
       username: ((slack-username))
@@ -134,15 +125,6 @@ jobs:
       channel: '#cg-platform-news'
       username: ((slack-username))
       icon_url: ((slack-icon-url))
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Successfully deployed shibboleth on staging
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
 
 - name: deploy-shibboleth-production
   plan:
@@ -194,15 +176,6 @@ jobs:
         :x: FAILED to deploy shibboleth on production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel-fatal-error))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Successfully deployed shibboleth on production
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
@@ -312,7 +285,7 @@ resources:
       value: "cg-ci-bot"
     - name: "user.email"
       value: "no-reply@cloud.gov"
-    paths: 
+    paths:
     - manifest/dev-vars.yml
     - ops/add-wazuh-agent.yml
     private_key: ((cg-ci-bot-sshkey.private_key))

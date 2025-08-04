@@ -65,11 +65,11 @@ jobs:
         IDP_NAME: ((idp-provider-origin-development))
   on_failure:
     put: slack
-    params:
+    params: &slack-failure-params
       text: |
         :x: FAILED to deploy shibboleth in development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
+      channel: ((slack-channel-notifications))
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
@@ -119,12 +119,10 @@ jobs:
   on_failure:
     put: slack
     params:
+      <<: *slack-failure-params
       text: |
         :x: FAILED to deploy shibboleth on staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
 
 - name: deploy-shibboleth-production
   plan:
@@ -172,12 +170,11 @@ jobs:
   on_failure:
     put: slack
     params:
+      <<: *slack-failure-params
       text: |
         :x: FAILED to deploy shibboleth on production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel-fatal-error))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
 
 resources:
 - name: pipeline-tasks

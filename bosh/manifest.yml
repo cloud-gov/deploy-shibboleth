@@ -71,8 +71,8 @@ instance_groups:
         description: Federated identity service for cloud.gov users
         login:
           forgotPasswordLink: ((forgot-password-url))
-          helpLink: https://cloud.gov/docs/help/
-          mfaHelpLink: https://cloud.gov/docs/getting-started/accounts/#if-you-can-t-access-your-token-codes
+          helpLink: https://docs.cloud.gov/platform/overview/support/
+          mfaHelpLink: https://docs.cloud.gov/platform/getting-started/account-management/#lost-totp-device
         authn:
           flows: Totp
         authentication:

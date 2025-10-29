@@ -1,0 +1,14 @@
+---
+platform: linux
+
+inputs:
+  - name: shibboleth-deployment-src
+params:
+  UAA_USER:
+  UAA_SECRET:
+  UAA_URL:
+  IDP_URL:
+  EXTRAS_URL:
+  IDP_NAME:
+run:
+  path: ./shibboleth-deployment-src/SATS_v78/run_acceptance_tests.sh

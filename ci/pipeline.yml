@@ -107,7 +107,7 @@ jobs:
       - shibboleth-stemcell-jammy/*.tgz
   - task: acceptance-tests
     image: general-task
-    file: shibboleth-deployment-src/ci/acceptance_tests.yml
+    file: shibboleth-deployment-src/ci/acceptance_tests_v78.yml
     params:
         UAA_USER: ((uaa-user))
         UAA_SECRET: ((uaa-client-secret-staging))
@@ -188,7 +188,7 @@ resources:
   type: git
   source:
     uri: ((cg-deploy-shibboleth-git-url))
-    branch: ((cg-deploy-shibboleth-git-branch))
+    branch: v78 #((cg-deploy-shibboleth-git-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: shibboleth-stemcell-jammy

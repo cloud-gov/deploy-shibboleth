@@ -1,4 +1,0 @@
-requests
-pyotp
-pytest
-beautifulsoup4

@@ -151,7 +151,7 @@ jobs:
       - shibboleth-stemcell-jammy/*.tgz
   - task: acceptance-tests
     image: general-task
-    file: shibboleth-deployment-src/ci/acceptance_tests.yml
+    file: shibboleth-deployment-src/ci/acceptance_tests_v78.yml
     params:
         UAA_USER: ((uaa-user))
         UAA_SECRET: ((uaa-client-secret-production))

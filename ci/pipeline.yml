@@ -17,6 +17,13 @@ groups:
 
 jobs:
 
+- name: set-self
+  plan:
+    - get: shibboleth-deployment-src
+      trigger: true
+    - set_pipeline: self
+      file: shibboleth-deployment-src/ci/pipeline.yml
+
 - name: deploy-shibboleth-development
   plan:
   - in_parallel:
@@ -25,6 +32,7 @@ jobs:
     - get: shibboleth-deployment-src
       trigger: true
       params: {depth: 1}
+      passed: [set-self]
     - get: terraform-yaml
       resource: terraform-yaml-development
     - get: cg-s3-shibboleth-release
@@ -167,20 +175,20 @@ jobs:
       text: |
         :x: FAILED to deploy shibboleth on production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel-fatal-error))
+      channel: ((slack-channel-platform))
 
 resources:
 - name: pipeline-tasks
   type: git
   source:
-    uri: ((pipeline-tasks-git-url))
+    uri: https://github.com/cloud-gov/cg-pipeline-tasks.git
     branch: ((pipeline-tasks-git-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: shibboleth-deployment-src
   type: git
   source:
-    uri: ((cg-deploy-shibboleth-git-url))
+    uri: https://github.com/cloud-gov/cg-deploy-shibboleth.git
     branch: ((cg-deploy-shibboleth-git-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
 

@@ -2,6 +2,7 @@
 groups:
 - name: all
   jobs:
+  - set-self
   - deploy-shibboleth-development
   - deploy-shibboleth-staging
   - deploy-shibboleth-production

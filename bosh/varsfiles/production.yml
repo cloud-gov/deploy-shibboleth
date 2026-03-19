@@ -10,3 +10,4 @@ shibboleth-instances: 3
 disk-type: 5GB
 vm-type: t3.xlarge
 use-idp4: true
+stemcell-os: ubuntu-jammy

@@ -205,6 +205,7 @@ resources:
     region_name: ((aws-region))
     private: true
     regexp: bosh-stemcell-aws-xen-ubuntu-jammy-amd64-go_agent-(.*).tgz
+    tags: [iaas]
 
 - name: cg-s3-shibboleth-release
   type: s3-iam

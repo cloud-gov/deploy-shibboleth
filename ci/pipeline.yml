@@ -40,7 +40,7 @@ jobs:
       trigger: true
     - get: secureproxy-release
       trigger: true
-    - get: shibboleth-stemcell-jammy-fips
+    - get: shibboleth-stemcell-jammy
       trigger: true
     - get: general-task
   - put: shibboleth-development-deployment
@@ -53,7 +53,7 @@ jobs:
       - cg-s3-shibboleth-release/*.tgz
       - secureproxy-release/*.tgz
       stemcells:
-      - shibboleth-stemcell-jammy-fips/*.tgz
+      - shibboleth-stemcell-jammy/*.tgz
   - task: acceptance-tests
     image: general-task
     file: shibboleth-deployment-src/ci/acceptance_tests_v78.yml
@@ -198,14 +198,14 @@ resources:
   source:
     name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
 
-- name: shibboleth-stemcell-jammy-fips
-  type: s3-iam
-  source: 
-    bucket: ((s3-fips-stemcell-bucket))
-    region_name: ((aws-region))
-    private: true
-    regexp: bosh-stemcell-aws-xen-ubuntu-jammy-amd64-go_agent-(.*).tgz
-    tags: [iaas]
+# - name: shibboleth-stemcell-jammy-fips
+#   type: s3-iam
+#   source: 
+#     bucket: ((s3-fips-stemcell-bucket))
+#     region_name: ((aws-region))
+#     private: true
+#     regexp: bosh-stemcell-aws-xen-ubuntu-jammy-amd64-go_agent-(.*).tgz
+#     tags: [iaas]
 
 - name: cg-s3-shibboleth-release
   type: s3-iam

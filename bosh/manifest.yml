@@ -81,6 +81,10 @@ instance_groups:
           forgotPasswordLink: ((forgot-password-url))
           helpLink: https://docs.cloud.gov/platform/overview/support/
           mfaHelpLink: https://docs.cloud.gov/platform/getting-started/account-management/#lost-totp-device
+          deprecationNotice: true
+          deprecationNoticeContent: >-
+            This identity provider retires March 1, 2027. Migrate to Login.gov (PIV/CAC required) or
+            your agency identity provider. Learn more: https://docs.cloud.gov/news/2026/10/20/decommission-notice-cloud-gov-identity-provider/
         authn:
           flows: Totp
         authentication:

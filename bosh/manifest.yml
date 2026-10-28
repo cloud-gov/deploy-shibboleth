@@ -84,7 +84,8 @@ instance_groups:
           deprecationNotice: true
           deprecationNoticeContent: >-
             This identity provider retires March 1, 2027. Migrate to Login.gov (PIV/CAC required) or
-            your agency identity provider. Learn more: https://docs.cloud.gov/news/2026/10/20/decommission-notice-cloud-gov-identity-provider/
+            your agency identity provider.
+            <a href="https://docs.cloud.gov/news/2026/10/20/decommission-notice-cloud-gov-identity-provider/">Learn more.</a>
         authn:
           flows: Totp
         authentication:

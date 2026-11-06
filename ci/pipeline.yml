@@ -222,31 +222,31 @@ resources:
     regexp: secureproxy-(.*).tgz
 
 - name: shibboleth-development-deployment
-  type: bosh-deployment
   source:
-    target: ((shibboleth-development-deployment-bosh-target))
-    client: ((shibboleth-development-deployment-bosh-client-id))
-    client_secret: ((shibboleth-development-deployment-bosh-client-passphrase))
+    ca_cert: ((bosh-director-info.development.ca_cert))
+    client: ((bosh-director-info.development.client))
+    client_secret: ((bosh-director-info.development.client_secret))
     deployment: ((shibboleth-development-deployment-bosh-deployment))
-    ca_cert: ((bosh-ca-cert))
+    target: ((bosh-director-info.development.environment))
+  type: bosh-deployment
 
 - name: shibboleth-staging-deployment
   type: bosh-deployment
   source:
-    target: ((shibboleth-staging-deployment-bosh-target))
-    client: ((shibboleth-staging-deployment-bosh-client-id))
-    client_secret: ((shibboleth-staging-deployment-bosh-client-passphrase))
+    ca_cert: ((bosh-director-info.staging.ca_cert))
+    client: ((bosh-director-info.staging.client))
+    client_secret: ((bosh-director-info.staging.client_secret))
     deployment: ((shibboleth-staging-deployment-bosh-deployment))
-    ca_cert: ((bosh-ca-cert))
+    target: ((bosh-director-info.staging.environment))
 
 - name: shibboleth-production-deployment
   type: bosh-deployment
   source:
-    target: ((shibboleth-production-deployment-bosh-target))
-    client: ((shibboleth-production-deployment-bosh-client-id))
-    client_secret: ((shibboleth-production-deployment-bosh-client-passphrase))
+    ca_cert: ((bosh-director-info.production.ca_cert))
+    client: ((bosh-director-info.production.client))
+    client_secret: ((bosh-director-info.production.client-secret))
     deployment: ((shibboleth-production-deployment-bosh-deployment))
-    ca_cert: ((bosh-ca-cert))
+    target: ((bosh-director-info.production.environment))
 
 - name: slack
   type: slack-notification

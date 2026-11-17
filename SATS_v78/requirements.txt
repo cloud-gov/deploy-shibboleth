@@ -1,4 +1,4 @@
 requests
-pyotp
+pyotp==2.10.0
 pytest
 beautifulsoup4
